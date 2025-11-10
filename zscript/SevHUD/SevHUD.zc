@@ -424,6 +424,10 @@ class SevHUD : DoomStatusBar
 					filepath = "graphics/SevHUD/btsx2/";
 					fnt = mBTSX2IndexFont;
 					break;
+
+				case 7:
+					filepath = "graphics/SevHUD/pl2/";
+					break;
 			}
 		}
 	
