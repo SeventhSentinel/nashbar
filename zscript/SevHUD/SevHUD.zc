@@ -14,6 +14,8 @@ class SevHUD : DoomStatusBar
 
 	HUDFont mHUDSmallFont;
 	HUDFont mHUDConFont;
+	
+	HUDFont mCustomSmallFont;
 
 	Actor prevAimTarget;
 	double healthBarAlpha;
@@ -30,7 +32,31 @@ class SevHUD : DoomStatusBar
 
 		mHUDSmallFont = HUDFont.Create(smallfont);
 		mHUDConFont = HUDFont.Create(confont);
+		
+		string filepath = "graphics/SevHUD/standard/";
+		bool usespecialynum = false;
+		
+		// Get style pref
+		
+		CVar c = CVar.GetCVar("sevhud_style", CPlayer);
+		if (c != null)
+		{
+			int style = c.GetInt();
 
+			switch (style)
+			{
+				case 0:
+					filepath = "graphics/SevHUD/blank/";
+					break;
+
+				case 2:
+					filepath = "graphics/SevHUD/btsx1/";
+					mCustomSmallFont = HUDFont.Create("BTSX1SmallFont");
+					usespecialynum = true;
+					break;
+			}
+		}
+		
 		InitNashBar();
 	}
 
@@ -69,8 +95,9 @@ class SevHUD : DoomStatusBar
 	//
 	//===========================================================================
 
-	void DrawStatusBarStats(int state)
+	void DrawStatusBarStats(int state, string filepath, int style)
 	{
+		
 		int amt;
 		int pcnt;
 
@@ -112,7 +139,7 @@ class SevHUD : DoomStatusBar
 				hoursoffset = 1;
 				amt = hours;
 				DrawString(mIndexFont, FormatNumber(amt, 1, format: 2), (274 + xoffset+2, 191), DI_TEXT_ALIGN_RIGHT);
-				DrawImage("graphics/SevHUD/standard/st_colon.png", (347, 192), DI_ITEM_OFFSETS);
+				DrawImage(filepath.."st_colon.png", (347, 192), DI_ITEM_OFFSETS);
 			}
 
 			// minutes
@@ -164,143 +191,6 @@ class SevHUD : DoomStatusBar
 		let allmap = Level.allmap;
 		if (allmap)
 			DrawImage("graphics/SevHUD/extra/st_allmap.png", (-17, 186), DI_ITEM_OFFSETS);
-	}
-
-	//===========================================================================
-	//
-	//
-	//
-	//===========================================================================
-
-	void DrawStats(void)
-	{
-		Vector2 pos = (0, 0);
-
-		int flags = DI_SCREEN_LEFT_BOTTOM;
-
-		/*
-		int statXPos = 0;
-		int currentWidth = 0;
-
-		let strMonsters = StringTable.Localize("$AM_MONSTERS");
-		currentWidth = mHUDSmallFont.mFont.StringWidth(strMonsters);
-		if (currentWidth > statXPos)
-			statXPos = currentWidth;
-
-		let strSecrets = StringTable.Localize("$AM_SECRETS");
-		currentWidth = mHUDSmallFont.mFont.StringWidth(strSecrets);
-		if (currentWidth > statXPos)
-			statXPos = currentWidth;
-
-		let strItems = StringTable.Localize("$AM_ITEMS");
-		currentWidth = mHUDSmallFont.mFont.StringWidth(strItems);
-		if (currentWidth > statXPos)
-			statXPos = currentWidth;
-
-		pos.X = X_PADDING;
-
-		statXPos += 8;
-
-		pos.Y = -64;
-
-		DrawStatText(pos, statXPos, strMonsters, String.Format("%i/%i ", multiplayer ? CPlayer.killcount : Level.killed_monsters, Level.total_monsters), flags);
-
-		pos.Y += 8;
-
-		DrawStatText(pos, statXPos, strSecrets, String.Format("%i/%i ", multiplayer ? CPlayer.secretcount : Level.found_secrets, Level.total_secrets), flags);
-
-		pos.Y += 8;
-
-		DrawStatText(pos, statXPos, strItems, String.Format("%i/%i ", multiplayer ? CPlayer.itemcount : Level.found_items, Level.total_items), flags);
-		*/
-
-		int clr = gameinfo.gametype & GAME_DoomChex ? Font.CR_UNTRANSLATED : Font.CR_YELLOW;
-		double fontHeight = mHUDSmallFont.mFont.GetHeight() + 1;
-		Vector2 adjust = (8, -fontHeight);
-
-		pos.X = 12;
-
-		pos.Y = -75;
-		DrawImage("graphics/SevHUD/icon_monsters.png", pos, flags);
-		DrawString(mHUDSmallFont, String.Format("%i/%i ", multiplayer ? CPlayer.killcount : Level.killed_monsters, Level.total_monsters), pos + adjust, flags, clr);
-
-		pos.Y += 15;
-		DrawImage("graphics/SevHUD/icon_items.png", pos, flags);
-		DrawString(mHUDSmallFont, String.Format("%i/%i ", multiplayer ? CPlayer.itemcount : Level.found_items, Level.total_items), pos + adjust, flags, clr);
-
-		pos.Y += 15;
-		DrawImage("graphics/SevHUD/icon_secrets.png", pos, flags);
-		DrawString(mHUDSmallFont, String.Format("%i/%i ", multiplayer ? CPlayer.secretcount : Level.found_secrets, Level.total_secrets), pos + adjust, flags, clr);
-	}
-
-	/*
-	void DrawStatText(Vector2 pos, int statXPos, String prefix, String text, int flags)
-	{
-		int clr = gameinfo.gametype & GAME_DoomChex ? Font.CR_UNTRANSLATED : Font.CR_YELLOW;
-		DrawString(mHUDSmallFont, prefix, pos, flags, clr);
-		clr = Font.CR_GREY;
-		DrawString(mHUDSmallFont, text, pos + (statXPos, 0), flags, clr);
-	}
-	*/
-
-	//===========================================================================
-	//
-	//
-	//
-	//===========================================================================
-
-	void DrawAmmo(void)
-	{
-		Vector2 pos = (0, 0);
-
-		int flags = DI_SCREEN_RIGHT_BOTTOM;
-
-		class<Ammo> ammoCls;
-		int ammoCurrent, ammoMax = 0;
-		Inventory ammoItem;
-
-		String txt;
-
-		pos.Y -= 48;
-
-		Array<class<Ammo> > ammoTypes;
-		ammoTypes.Clear();
-		ammoCls = "Cell";
-		ammoTypes.Push(ammoCls);
-		ammoCls = "RocketAmmo";
-		ammoTypes.Push(ammoCls);
-		ammoCls = "Shell";
-		ammoTypes.Push(ammoCls);
-		ammoCls = "Clip";
-		ammoTypes.Push(ammoCls);
-
-		for (int i = 0; i < ammoTypes.Size(); i++)
-		{
-			ammoCls = ammoTypes[i];
-			ammoItem = CPlayer.mo.FindInventory(ammoCls);
-			ammoCurrent = ammoItem ? ammoItem.Amount : 0;
-			ammoMax = ammoItem ? ammoItem.MaxAmount : GetDefaultByType(ammoCls).MaxAmount;
-
-			txt = String.Format("%d", ammoMax);
-			pos.X = -mHUDSmallFont.mFont.StringWidth(txt) - X_PADDING;
-			pos.Y -= mHUDSmallFont.mFont.GetHeight();
-			DrawString(mHUDSmallFont, txt, pos, flags, Font.CR_UNTRANSLATED);
-
-			txt = "/";
-			DrawString(mHUDSmallFont, txt, (-32 - X_PADDING, pos.Y), flags, Font.CR_UNTRANSLATED);
-
-			txt = String.Format("%d", ammoCurrent);
-			DrawString(mHUDSmallFont, txt, (-56 - X_PADDING, pos.Y), flags, Font.CR_UNTRANSLATED);
-
-			let inv = GetDefaultByType(ammoCls);
-			let tex = inv.Icon;
-			let texName = TexMan.GetName(tex);
-			let texsize = TexMan.GetScaledSize(tex);
-			Vector2 iconScale = (1.0, 1.0);
-			iconScale.Y = 1.0 * (mHUDSmallFont.mFont.GetHeight() / texSize.Y);
-			iconScale.X = iconScale.Y;
-			DrawImage(texName, (-72 - X_PADDING, pos.Y + mHUDSmallFont.mFont.GetHeight() - 2), flags, scale: iconScale);
-		}
 	}
 
 	//===========================================================================
@@ -564,6 +454,7 @@ class SevHUD : DoomStatusBar
 	void DrawSevHUD(int state)
 	{
 		string filepath = "graphics/SevHUD/standard/";
+		bool usespecialynum = false;
 		
 		// Get style pref
 		
@@ -580,12 +471,13 @@ class SevHUD : DoomStatusBar
 
 				case 2:
 					filepath = "graphics/SevHUD/btsx1/";
+					usespecialynum = true;
 					break;
 			}
 		}
 	
 		DrawImage(filepath.."st_extra.png", (-53, 168), DI_ITEM_OFFSETS);
-		DrawStatusBarStats(state);
+		DrawStatusBarStats(state, filepath, c.GetInt());
 		DrawStatusBarPowerups();
 		
 		// Okay, time to draw the rest of the owl
@@ -654,12 +546,24 @@ class SevHUD : DoomStatusBar
 			// Draw "ARMS" text
 			DrawImage(filepath.."st_arms.png", (104, 168), DI_ITEM_OFFSETS);
 			// Draw weapons numbers
-			DrawImage(CPlayer.HasWeaponsInSlot(2)? "STYSNUM2" : filepath.."st_gnum2.png", (111, 172), DI_ITEM_OFFSETS);
-			DrawImage(CPlayer.HasWeaponsInSlot(3)? "STYSNUM3" : filepath.."st_gnum3.png", (123, 172), DI_ITEM_OFFSETS);
-			DrawImage(CPlayer.HasWeaponsInSlot(4)? "STYSNUM4" : filepath.."st_gnum4.png", (135, 172), DI_ITEM_OFFSETS);
-			DrawImage(CPlayer.HasWeaponsInSlot(5)? "STYSNUM5" : filepath.."st_gnum5.png", (111, 182), DI_ITEM_OFFSETS);
-			DrawImage(CPlayer.HasWeaponsInSlot(6)? "STYSNUM6" : filepath.."st_gnum6.png", (123, 182), DI_ITEM_OFFSETS);
-			DrawImage(CPlayer.HasWeaponsInSlot(7)? "STYSNUM7" : filepath.."st_gnum7.png", (135, 182), DI_ITEM_OFFSETS);
+			if (!usespecialynum)
+			{
+				DrawImage(CPlayer.HasWeaponsInSlot(2)? "STYSNUM2" : filepath.."st_gnum2.png", (111, 172), DI_ITEM_OFFSETS);
+				DrawImage(CPlayer.HasWeaponsInSlot(3)? "STYSNUM3" : filepath.."st_gnum3.png", (123, 172), DI_ITEM_OFFSETS);
+				DrawImage(CPlayer.HasWeaponsInSlot(4)? "STYSNUM4" : filepath.."st_gnum4.png", (135, 172), DI_ITEM_OFFSETS);
+				DrawImage(CPlayer.HasWeaponsInSlot(5)? "STYSNUM5" : filepath.."st_gnum5.png", (111, 182), DI_ITEM_OFFSETS);
+				DrawImage(CPlayer.HasWeaponsInSlot(6)? "STYSNUM6" : filepath.."st_gnum6.png", (123, 182), DI_ITEM_OFFSETS);
+				DrawImage(CPlayer.HasWeaponsInSlot(7)? "STYSNUM7" : filepath.."st_gnum7.png", (135, 182), DI_ITEM_OFFSETS);
+			}
+			else
+			{
+				DrawImage(CPlayer.HasWeaponsInSlot(2)? filepath.."st_ynum2.png" : filepath.."st_gnum2.png", (111, 172), DI_ITEM_OFFSETS);
+				DrawImage(CPlayer.HasWeaponsInSlot(3)? filepath.."st_ynum3.png" : filepath.."st_gnum3.png", (123, 172), DI_ITEM_OFFSETS);
+				DrawImage(CPlayer.HasWeaponsInSlot(4)? filepath.."st_ynum4.png" : filepath.."st_gnum4.png", (135, 172), DI_ITEM_OFFSETS);
+				DrawImage(CPlayer.HasWeaponsInSlot(5)? filepath.."st_ynum5.png" : filepath.."st_gnum5.png", (111, 182), DI_ITEM_OFFSETS);
+				DrawImage(CPlayer.HasWeaponsInSlot(6)? filepath.."st_ynum6.png" : filepath.."st_gnum6.png", (123, 182), DI_ITEM_OFFSETS);
+				DrawImage(CPlayer.HasWeaponsInSlot(7)? filepath.."st_ynum7.png" : filepath.."st_gnum7.png", (135, 182), DI_ITEM_OFFSETS);
+			}
 		}
 	}
 }
