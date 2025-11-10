@@ -1,4 +1,18 @@
-BTSX1SmallFont
+DefaultIndexFont
+{
+   0 STYSNUM0
+   1 STYSNUM1
+   2 STYSNUM2
+   3 STYSNUM3
+   4 STYSNUM4
+   5 STYSNUM5
+   6 STYSNUM6
+   7 STYSNUM7
+   8 STYSNUM8
+   9 STYSNUM9
+}
+
+BTSX1IndexFont
 {
 	0 "graphics/SevHUD/btsx1/st_ynum0.png"
 	1 "graphics/SevHUD/btsx1/st_ynum1.png"

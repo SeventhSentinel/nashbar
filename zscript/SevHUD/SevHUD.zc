@@ -15,6 +15,9 @@ class SevHUD : DoomStatusBar
 	HUDFont mHUDSmallFont;
 	HUDFont mHUDConFont;
 	
+	HUDFont mBTSX1IndexFont;
+	HUDFont mDefaultIndexFont;
+	
 	Actor prevAimTarget;
 	double healthBarAlpha;
 
@@ -31,6 +34,9 @@ class SevHUD : DoomStatusBar
 		mHUDSmallFont = HUDFont.Create(smallfont);
 		mHUDConFont = HUDFont.Create(confont);
 		
+		mDefaultIndexFont = HUDFont.Create("DefaultIndexFont");
+		mBTSX1IndexFont = HUDFont.Create("BTSX1IndexFont");
+
 		InitNashBar();
 	}
 
@@ -69,28 +75,28 @@ class SevHUD : DoomStatusBar
 	//
 	//===========================================================================
 
-	void DrawStatusBarStats(int state, string filepath, int style)
+	void DrawStatusBarStats(int state, string filepath, HUDFont fnt)
 	{
 		
 		int amt;
 		int pcnt;
 
-		int xoffset = 71;
+		int xoffset = 70;
 
 		// kills
 		pcnt = Level.total_monsters ? 100 * Level.killed_monsters / Level.total_monsters : 100;
 		amt = multiplayer ? CPlayer.killcount : pcnt;
-		DrawString(mIndexFont, FormatNumber(amt, 3), (288 + xoffset, 173), DI_TEXT_ALIGN_RIGHT);
+		DrawString(fnt, FormatNumber(amt, 3), (288 + xoffset, 173), DI_TEXT_ALIGN_RIGHT);
 
 		// items
 		pcnt = Level.total_items ? 100 * Level.found_items / Level.total_items : 100;
 		amt = multiplayer ? CPlayer.itemcount : pcnt;
-		DrawString(mIndexFont, FormatNumber(amt, 3), (288 + xoffset, 179), DI_TEXT_ALIGN_RIGHT);
+		DrawString(fnt, FormatNumber(amt, 3), (288 + xoffset, 179), DI_TEXT_ALIGN_RIGHT);
 
 		// secrets
 		pcnt = Level.total_secrets ? 100 * Level.found_secrets / Level.total_secrets : 100;
 		amt = multiplayer ? CPlayer.secretcount : pcnt;
-		DrawString(mIndexFont, FormatNumber(amt, 3), (288 + xoffset, 185), DI_TEXT_ALIGN_RIGHT);
+		DrawString(fnt, FormatNumber(amt, 3), (288 + xoffset, 185), DI_TEXT_ALIGN_RIGHT);
 
 		// time stuff
 		bool sucks = false;
@@ -112,7 +118,7 @@ class SevHUD : DoomStatusBar
 			{
 				hoursoffset = 1;
 				amt = hours;
-				DrawString(mIndexFont, FormatNumber(amt, 1, format: 2), (274 + xoffset+2, 191), DI_TEXT_ALIGN_RIGHT);
+				DrawString(fnt, FormatNumber(amt, 1, format: 2), (274 + xoffset+2, 191), DI_TEXT_ALIGN_RIGHT);
 				DrawImage(filepath.."st_colon.png", (347, 192), DI_ITEM_OFFSETS);
 			}
 
@@ -120,11 +126,11 @@ class SevHUD : DoomStatusBar
 			if ((minutes >= 10) || (hours >= 1))
 				minsdigits = 2;
 			amt = minutes;
-			DrawString(mIndexFont, FormatNumber(amt, minsdigits, format: 2), (286 + xoffset+hoursoffset, 191), DI_TEXT_ALIGN_RIGHT);
+			DrawString(fnt, FormatNumber(amt, minsdigits, format: 2), (286 + xoffset+hoursoffset, 191), DI_TEXT_ALIGN_RIGHT);
 
 			// seconds
 			amt = seconds;
-			DrawString(mIndexFont, FormatNumber(amt, 2, format: 2), (298 + xoffset, 191), DI_TEXT_ALIGN_RIGHT);
+			DrawString(fnt, FormatNumber(amt, 2, format: 2), (298 + xoffset, 191), DI_TEXT_ALIGN_RIGHT);
 		}
 		else
 		{
@@ -346,6 +352,26 @@ class SevHUD : DoomStatusBar
 		}
 	}
 
+	void DrawSevHUDAmmo(HUDFont fnt)
+	{
+		int amt1, maxamt;
+		[amt1, maxamt] = GetAmount("Clip");
+		DrawString(fnt, FormatNumber(amt1, 3), (287, 173), DI_TEXT_ALIGN_RIGHT);
+		DrawString(fnt, FormatNumber(maxamt, 3), (313, 173), DI_TEXT_ALIGN_RIGHT);
+		
+		[amt1, maxamt] = GetAmount("Shell");
+		DrawString(fnt, FormatNumber(amt1, 3), (287, 179), DI_TEXT_ALIGN_RIGHT);
+		DrawString(fnt, FormatNumber(maxamt, 3), (313, 179), DI_TEXT_ALIGN_RIGHT);
+		
+		[amt1, maxamt] = GetAmount("RocketAmmo");
+		DrawString(fnt, FormatNumber(amt1, 3), (287, 185), DI_TEXT_ALIGN_RIGHT);
+		DrawString(fnt, FormatNumber(maxamt, 3), (313, 185), DI_TEXT_ALIGN_RIGHT);
+		
+		[amt1, maxamt] = GetAmount("Cell");
+		DrawString(fnt, FormatNumber(amt1, 3), (287, 191), DI_TEXT_ALIGN_RIGHT);
+		DrawString(fnt, FormatNumber(maxamt, 3), (313, 191), DI_TEXT_ALIGN_RIGHT);
+	}
+
 	//===========================================================================
 	//
 	//
@@ -355,7 +381,7 @@ class SevHUD : DoomStatusBar
 	void DrawSevHUD(int state)
 	{
 		string filepath = "graphics/SevHUD/standard/";
-		bool usespecialynum = false;
+		HUDFont fnt = mDefaultIndexFont;
 		
 		// Get style pref
 		
@@ -372,13 +398,13 @@ class SevHUD : DoomStatusBar
 
 				case 2:
 					filepath = "graphics/SevHUD/btsx1/";
-					usespecialynum = true;
+					fnt = mBTSX1IndexFont;
 					break;
 			}
 		}
 	
 		DrawImage(filepath.."st_extra.png", (-53, 168), DI_ITEM_OFFSETS);
-		DrawStatusBarStats(state, filepath, c.GetInt());
+		DrawStatusBarStats(state, filepath, fnt);
 		DrawStatusBarPowerups();
 		
 		// Okay, time to draw the rest of the owl
@@ -402,24 +428,9 @@ class SevHUD : DoomStatusBar
 		DrawString(mHUDFont, FormatNumber(GetArmorAmount(), 3), (221, 171), DI_TEXT_ALIGN_RIGHT|DI_NOSHADOW);
 
 		DoomStatusBar.DrawBarKeys();
-
-		// DrawBarAmmo
-		int amt1, maxamt;
-		[amt1, maxamt] = GetAmount("Clip");
-		DrawString(mIndexFont, FormatNumber(amt1, 3), (288, 173), DI_TEXT_ALIGN_RIGHT);
-		DrawString(mIndexFont, FormatNumber(maxamt, 3), (314, 173), DI_TEXT_ALIGN_RIGHT);
 		
-		[amt1, maxamt] = GetAmount("Shell");
-		DrawString(mIndexFont, FormatNumber(amt1, 3), (288, 179), DI_TEXT_ALIGN_RIGHT);
-		DrawString(mIndexFont, FormatNumber(maxamt, 3), (314, 179), DI_TEXT_ALIGN_RIGHT);
 		
-		[amt1, maxamt] = GetAmount("RocketAmmo");
-		DrawString(mIndexFont, FormatNumber(amt1, 3), (288, 185), DI_TEXT_ALIGN_RIGHT);
-		DrawString(mIndexFont, FormatNumber(maxamt, 3), (314, 185), DI_TEXT_ALIGN_RIGHT);
-		
-		[amt1, maxamt] = GetAmount("Cell");
-		DrawString(mIndexFont, FormatNumber(amt1, 3), (288, 191), DI_TEXT_ALIGN_RIGHT);
-		DrawString(mIndexFont, FormatNumber(maxamt, 3), (314, 191), DI_TEXT_ALIGN_RIGHT);
+		DrawSevHUDAmmo(fnt);
 		
 		if (deathmatch || teamplay)
 		{
@@ -460,14 +471,16 @@ class SevHUD : DoomStatusBar
 			// Draw "ARMS" text
 			DrawImage(filepath.."st_arms.png", (104, 168), DI_ITEM_OFFSETS);
 			// Draw weapons numbers
-			if (!usespecialynum)
+			if (fnt == mDefaultIndexFont)
 			{
-				DrawImage(CPlayer.HasWeaponsInSlot(2)? "STYSNUM2" : filepath.."st_gnum2.png", (111, 172), DI_ITEM_OFFSETS);
-				DrawImage(CPlayer.HasWeaponsInSlot(3)? "STYSNUM3" : filepath.."st_gnum3.png", (123, 172), DI_ITEM_OFFSETS);
-				DrawImage(CPlayer.HasWeaponsInSlot(4)? "STYSNUM4" : filepath.."st_gnum4.png", (135, 172), DI_ITEM_OFFSETS);
-				DrawImage(CPlayer.HasWeaponsInSlot(5)? "STYSNUM5" : filepath.."st_gnum5.png", (111, 182), DI_ITEM_OFFSETS);
-				DrawImage(CPlayer.HasWeaponsInSlot(6)? "STYSNUM6" : filepath.."st_gnum6.png", (123, 182), DI_ITEM_OFFSETS);
-				DrawImage(CPlayer.HasWeaponsInSlot(7)? "STYSNUM7" : filepath.."st_gnum7.png", (135, 182), DI_ITEM_OFFSETS);
+				// If we're using the default font, then draw the standard numbers
+				// That way we don't have to copy st_gnum*.png into every directory
+				DrawImage(CPlayer.HasWeaponsInSlot(2)? "STYSNUM2" : "graphics/SevHUD/standard/st_gnum2.png", (111, 172), DI_ITEM_OFFSETS);
+				DrawImage(CPlayer.HasWeaponsInSlot(3)? "STYSNUM3" : "graphics/SevHUD/standard/st_gnum3.png", (123, 172), DI_ITEM_OFFSETS);
+				DrawImage(CPlayer.HasWeaponsInSlot(4)? "STYSNUM4" : "graphics/SevHUD/standard/st_gnum4.png", (135, 172), DI_ITEM_OFFSETS);
+				DrawImage(CPlayer.HasWeaponsInSlot(5)? "STYSNUM5" : "graphics/SevHUD/standard/st_gnum5.png", (111, 182), DI_ITEM_OFFSETS);
+				DrawImage(CPlayer.HasWeaponsInSlot(6)? "STYSNUM6" : "graphics/SevHUD/standard/st_gnum6.png", (123, 182), DI_ITEM_OFFSETS);
+				DrawImage(CPlayer.HasWeaponsInSlot(7)? "STYSNUM7" : "graphics/SevHUD/standard/st_gnum7.png", (135, 182), DI_ITEM_OFFSETS);
 			}
 			else
 			{
