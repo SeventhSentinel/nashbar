@@ -1,4 +1,6 @@
 [enu default]
 
 OPTMNU_SEVHUD = "SevHUD Options";
-OPTMNU_NASHBAR_HP_BAR = "Target Health Display";
+OPTMNU_SEVHUD_HP_BAR = "Target Health Display";
+OPTMENU_SEVHUD_STYLE = "SevHUD Style";
+OPTMNU_SEVHUD_EXTRA = "Extended stats";

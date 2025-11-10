@@ -1,8 +1,9 @@
 //===========================================================================
 //
-// NashBar
+// SevHUD
 //
 // ZScript code: Copyright (C) 2020 - 2025 Nash Muhandes
+// Heavily modified by SeventhSentinel
 //
 // License: MIT
 //
@@ -229,13 +230,13 @@ class SevHUD : DoomStatusBar
 		if (!CPlayer || !CPlayer.mo)
 			return;
 
-		if (!CVar.GetCVar("nashbar_hpbar", CPlayer).GetBool())
+		if (!CVar.GetCVar("sevhud_hpbar", CPlayer).GetBool())
 			return;
 
 		if (automapactive)
 			return;
 
-		let tracer = NashBarHealthTracer(CPlayer.mo.FindInventory("NashBarHealthTracer"));
+		let tracer = SevHUDHealthTracer(CPlayer.mo.FindInventory("SevHUDHealthTracer"));
 		if (!tracer)
 			return;
 
@@ -430,10 +431,14 @@ class SevHUD : DoomStatusBar
 					break;
 			}
 		}
-	
-		DrawImage(filepath.."st_extra.png", (-53, 168), DI_ITEM_OFFSETS);
-		DrawStatusBarStats(state, filepath, fnt);
-		DrawStatusBarPowerups();
+
+		if (CVar.GetCVar("sevhud_extra", CPlayer).GetBool())
+		{
+			DrawImage("graphics/SevHUD/extra/st_extra.png", (-53, 168), DI_ITEM_OFFSETS);
+			DrawImage(filepath.."st_stats.png", (320, 168), DI_ITEM_OFFSETS);
+			DrawStatusBarStats(state, filepath, fnt);
+			DrawStatusBarPowerups();
+		}
 		
 		// Okay, time to draw the rest of the owl
 		// Or trace the owl from gzdoom.pk3's paper I guess

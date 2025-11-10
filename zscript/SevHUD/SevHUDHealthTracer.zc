@@ -1,14 +1,15 @@
 //===========================================================================
 //
-// NashBar
+// SevHUD
 //
-// ZScript code: Copyright (C) 2020 - 2023 Nash Muhandes
+// ZScript code: Copyright (C) 2020 - 2025 Nash Muhandes
+// Heavily modified by SeventhSentinel
 //
 // License: MIT
 //
 //===========================================================================
 
-class NashBarHealthTracer : Inventory
+class SevHUDHealthTracer : Inventory
 {
 	Actor currentAimTarget;
 
