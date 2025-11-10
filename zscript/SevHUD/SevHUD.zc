@@ -15,8 +15,10 @@ class SevHUD : DoomStatusBar
 	HUDFont mHUDSmallFont;
 	HUDFont mHUDConFont;
 	
-	HUDFont mBTSX1IndexFont;
 	HUDFont mDefaultIndexFont;
+	HUDFont mFreeIndexFont;
+	HUDFont mBTSX1IndexFont;
+	HUDFont mBTSX2IndexFont;
 	
 	Actor prevAimTarget;
 	double healthBarAlpha;
@@ -35,7 +37,9 @@ class SevHUD : DoomStatusBar
 		mHUDConFont = HUDFont.Create(confont);
 		
 		mDefaultIndexFont = HUDFont.Create("DefaultIndexFont");
+		mFreeIndexFont = HUDFont.Create("FreeIndexFont");
 		mBTSX1IndexFont = HUDFont.Create("BTSX1IndexFont");
+		mBTSX2IndexFont = HUDFont.Create("BTSX2IndexFont");
 
 		InitNashBar();
 	}
@@ -392,13 +396,33 @@ class SevHUD : DoomStatusBar
 
 			switch (style)
 			{
+				// Wow! It's fucking nothing
 				case 0:
 					filepath = "graphics/SevHUD/blank/";
 					break;
 
 				case 2:
+					filepath = "graphics/SevHUD/legacyofrust/";
+					break;
+
+				case 3:
+					filepath = "graphics/SevHUD/freedoom/";
+					fnt = mFreeIndexFont;
+					break;
+
+				// Freestyle, for wads that use the FreeDoom status bar but with the standard Doom IndexFont
+				case 4:
+					filepath = "graphics/SevHUD/freedoom/";
+					break;
+
+				case 5:
 					filepath = "graphics/SevHUD/btsx1/";
 					fnt = mBTSX1IndexFont;
+					break;
+
+				case 6:
+					filepath = "graphics/SevHUD/btsx2/";
+					fnt = mBTSX2IndexFont;
 					break;
 			}
 		}

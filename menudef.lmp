@@ -18,6 +18,17 @@ OptionValue SevHUDSize
 	12.0, "Automap Only"
 }
 
+OptionValue SevHUDStyle
+{
+	0, "0: Blank"
+	1, "1: Standard"
+	2, "2: Cells = Fuel"
+	3, "3: FreeDoom"
+	4, "4: Freestyle"
+	5, "5: BTSX Episode 1"
+	6, "6: BTSX Episode 2"
+}
+
 OptionMenu "SevHUDOptionMenu"
 {
 	Title "$OPTMNU_SEVHUD"
@@ -29,6 +40,9 @@ OptionMenu "SevHUDOptionMenu"
 	StaticText ""
 	StaticText "Make sure this doesn't say 'Unknown'"
 	Option "Show SevHUD",				"screenblocks", 				"SevHUDSize"
+	StaticText ""
+	StaticText "Choose the style that matches your loaded map pack"
+	Option "$OPTMENU_SEVHUD_STYLE",			"sevhud_style", 			"SevHUDStyle"
 	StaticText ""
 	StaticText "Adjust to your preferred size"
 	Slider "$SCALEMNU_HUD_SCALEFACTOR",			"hud_scalefactor", 0.0, 1.0, 0.025, 3, "hud_oldscale", 1
