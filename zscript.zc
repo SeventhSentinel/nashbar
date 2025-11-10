@@ -1,5 +1,5 @@
 version "4.14"
 
-#include "zscript/NashBar/NashBarHealthTracer.zc"
-#include "zscript/NashBar/NashBarHandler.zc"
-#include "zscript/NashBar/NashBar.zc"
+#include "zscript/SevHUD/NashBarHealthTracer.zc"
+#include "zscript/SevHUD/NashBarHandler.zc"
+#include "zscript/SevHUD/NashBar.zc"

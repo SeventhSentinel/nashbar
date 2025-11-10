@@ -1,5 +1,6 @@
 GameInfo
 {
-	StatusBarClass = "NashBar"
+	StatusBarClass = "SevHUD"
 	AddEventHandlers = "NashBarHandler"
+	borderflat = "SEV_BLNK"
 }

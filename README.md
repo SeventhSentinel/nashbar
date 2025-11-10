@@ -1,4 +1,5 @@
-# NashBar
-A classic-style status bar mod for GZDoom
+# SevHUD
+A classic-style status bar mod for UZDoom
+Forked from the excellent NashBar
 
-![Screenshot_Doom_20230809_233331](https://github.com/nashmuhandes/nashbar/assets/4926156/a9fdaa1b-7dcb-4dd3-93e9-fc1c67b46d2e)
+TODO: put a screenshot here
