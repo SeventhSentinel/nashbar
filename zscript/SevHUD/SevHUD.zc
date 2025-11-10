@@ -15,8 +15,6 @@ class SevHUD : DoomStatusBar
 	HUDFont mHUDSmallFont;
 	HUDFont mHUDConFont;
 	
-	HUDFont mCustomSmallFont;
-
 	Actor prevAimTarget;
 	double healthBarAlpha;
 
@@ -32,30 +30,6 @@ class SevHUD : DoomStatusBar
 
 		mHUDSmallFont = HUDFont.Create(smallfont);
 		mHUDConFont = HUDFont.Create(confont);
-		
-		string filepath = "graphics/SevHUD/standard/";
-		bool usespecialynum = false;
-		
-		// Get style pref
-		
-		CVar c = CVar.GetCVar("sevhud_style", CPlayer);
-		if (c != null)
-		{
-			int style = c.GetInt();
-
-			switch (style)
-			{
-				case 0:
-					filepath = "graphics/SevHUD/blank/";
-					break;
-
-				case 2:
-					filepath = "graphics/SevHUD/btsx1/";
-					mCustomSmallFont = HUDFont.Create("BTSX1SmallFont");
-					usespecialynum = true;
-					break;
-			}
-		}
 		
 		InitNashBar();
 	}
@@ -199,84 +173,11 @@ class SevHUD : DoomStatusBar
 	//
 	//===========================================================================
 
-	void DrawArms(void)
-	{
-		Vector2 pos = (0, 0);
-
-		int flags = DI_SCREEN_RIGHT_BOTTOM;
-
-		String armsTxt;
-
-		// scan all weapons
-		for (int k = 0; k < PlayerPawn.NUM_WEAPON_SLOTS; k++)
-		{
-			int slotsize = CPlayer.weapons.SlotSize(k);
-			for (int j = 0; j < slotsize; j++)
-			{
-				let weap = CPlayer.weapons.GetWeapon(k, j);
-				if (weap)
-				{
-					if (CPlayer.mo.FindInventory(weap))
-					{
-						String selectColor = CPlayer.ReadyWeapon.GetClass() == weap ? "\c[GOLD]" : "\c[DARKGREY]";
-						if (k != k - 1)
-							armsTxt = armsTxt .. selectColor .. String.Format("%d", k) .. "\c[DARKGREY]";
-					}
-				}
-			}
-		}
-
-		String txt = String.Format("%s", armsTxt);
-
-		pos.X = -mHUDSmallFont.mFont.StringWidth(txt) - X_PADDING;
-		pos.Y -= 48;
-		DrawString(mHUDSmallFont, txt, pos, flags, Font.CR_UNTRANSLATED);
-	}
-
-	//===========================================================================
-	//
-	//
-	//
-	//===========================================================================
-
 	void DrawMugshot(void)
 	{
 		int flags = DI_SCREEN_LEFT_BOTTOM;
 		let mug = GetMugShot(5);
 		DrawTexture(mug, (104, -1), flags);
-	}
-
-	//===========================================================================
-	//
-	//
-	//
-	//===========================================================================
-
-	void DrawTime(void)
-	{
-		int flags = DI_SCREEN_LEFT_BOTTOM;
-		Vector2 pos;
-
-		pos.X = X_PADDING;
-		//pos.Y = -72 - mHUDSmallFont.mFont.GetHeight();
-		pos.Y = -108 - mHUDSmallFont.mFont.GetHeight();
-
-		int timer;
-		int seconds;
-		String txt;
-		let clr = Font.CR_WHITE;
-
-		timer = Level.time;
-		seconds = Thinker.Tics2Seconds(timer);
-		txt= String.Format("%02i:%02i:%02i", seconds / 3600, (seconds % 3600) / 60, seconds % 60);
-		DrawString(mHUDSmallFont, txt, pos, flags, clr);
-
-		pos.Y += mHUDSmallFont.mFont.GetHeight();
-
-		timer = Level.totaltime;
-		seconds = Thinker.Tics2Seconds(timer);
-		txt = String.Format("%02i:%02i:%02i", seconds / 3600, (seconds % 3600) / 60, seconds % 60);
-		DrawString(mHUDSmallFont, txt, pos, flags, clr);
 	}
 
 	//===========================================================================
@@ -483,7 +384,7 @@ class SevHUD : DoomStatusBar
 		// Okay, time to draw the rest of the owl
 		// Or trace the owl from gzdoom.pk3's paper I guess
 				
-		// DrawMainBar()
+		// DrawMainBar
 		if (state == HUD_StatusBar)
 		{
 			DrawImage(filepath.."st_auto.png", (0, 168), DI_ITEM_OFFSETS);
@@ -501,17 +402,30 @@ class SevHUD : DoomStatusBar
 		DrawString(mHUDFont, FormatNumber(GetArmorAmount(), 3), (221, 171), DI_TEXT_ALIGN_RIGHT|DI_NOSHADOW);
 
 		DoomStatusBar.DrawBarKeys();
-		DoomStatusBar.DrawBarAmmo();
+
+		// DrawBarAmmo
+		int amt1, maxamt;
+		[amt1, maxamt] = GetAmount("Clip");
+		DrawString(mIndexFont, FormatNumber(amt1, 3), (288, 173), DI_TEXT_ALIGN_RIGHT);
+		DrawString(mIndexFont, FormatNumber(maxamt, 3), (314, 173), DI_TEXT_ALIGN_RIGHT);
+		
+		[amt1, maxamt] = GetAmount("Shell");
+		DrawString(mIndexFont, FormatNumber(amt1, 3), (288, 179), DI_TEXT_ALIGN_RIGHT);
+		DrawString(mIndexFont, FormatNumber(maxamt, 3), (314, 179), DI_TEXT_ALIGN_RIGHT);
+		
+		[amt1, maxamt] = GetAmount("RocketAmmo");
+		DrawString(mIndexFont, FormatNumber(amt1, 3), (288, 185), DI_TEXT_ALIGN_RIGHT);
+		DrawString(mIndexFont, FormatNumber(maxamt, 3), (314, 185), DI_TEXT_ALIGN_RIGHT);
+		
+		[amt1, maxamt] = GetAmount("Cell");
+		DrawString(mIndexFont, FormatNumber(amt1, 3), (288, 191), DI_TEXT_ALIGN_RIGHT);
+		DrawString(mIndexFont, FormatNumber(maxamt, 3), (314, 191), DI_TEXT_ALIGN_RIGHT);
 		
 		if (deathmatch || teamplay)
 		{
 			DrawString(mHUDFont, FormatNumber(CPlayer.FragCount, 3), (138, 171), DI_TEXT_ALIGN_RIGHT);
 		}
-/*		else
-		{
-			DrawBarWeapons();
-		}
-*/		
+	
 		if (multiplayer)
 		{
 			DrawImage("STFBANY", (143, 168), DI_ITEM_OFFSETS|DI_TRANSLATABLE);
