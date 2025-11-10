@@ -32,7 +32,6 @@ class SevHUD : DoomStatusBar
 		mHUDConFont = HUDFont.Create(confont);
 
 		InitNashBar();
-
 	}
 
 	override void NewGame(void)
@@ -564,7 +563,28 @@ class SevHUD : DoomStatusBar
 
 	void DrawSevHUD(int state)
 	{
-		DrawImage("graphics/SevHUD/standard/st_extra.png", (-53, 168), DI_ITEM_OFFSETS);
+		string filepath = "graphics/SevHUD/standard/";
+		
+		// Get style pref
+		
+		CVar c = CVar.GetCVar("sevhud_style", CPlayer);
+		if (c != null)
+		{
+			int style = c.GetInt();
+
+			switch (style)
+			{
+				case 0:
+					filepath = "graphics/SevHUD/blank/";
+					break;
+
+				case 2:
+					filepath = "graphics/SevHUD/btsx1/";
+					break;
+			}
+		}
+	
+		DrawImage(filepath.."st_extra.png", (-53, 168), DI_ITEM_OFFSETS);
 		DrawStatusBarStats(state);
 		DrawStatusBarPowerups();
 		
@@ -574,11 +594,11 @@ class SevHUD : DoomStatusBar
 		// DrawMainBar()
 		if (state == HUD_StatusBar)
 		{
-			DrawImage("graphics/SevHUD/standard/st_auto.png", (0, 168), DI_ITEM_OFFSETS);
+			DrawImage(filepath.."st_auto.png", (0, 168), DI_ITEM_OFFSETS);
 		}
 		else if (state == HUD_Fullscreen)
 		{
-			DrawImage("graphics/SevHUD/standard/st_bar.png", (0, 168), DI_ITEM_OFFSETS);
+			DrawImage(filepath.."st_bar.png", (0, 168), DI_ITEM_OFFSETS);
 		}
 		DrawImage("STTPRCNT", (90, 171), DI_ITEM_OFFSETS);
 		DrawImage("STTPRCNT", (221, 171), DI_ITEM_OFFSETS);
@@ -625,21 +645,21 @@ class SevHUD : DoomStatusBar
 		if (deathmatch || teamplay)
 		{
 			// Draw "FRAGS" text
-			DrawImage("graphics/SevHUD/standard/st_frag.png", (104, 168), DI_ITEM_OFFSETS);
+			DrawImage(filepath.."st_frag.png", (104, 168), DI_ITEM_OFFSETS);
 			// Draw amount of frags
 			DrawString(mHUDFont, FormatNumber(CPlayer.FragCount, 3), (138, 171), DI_TEXT_ALIGN_RIGHT);
 		}
 		else
 		{
 			// Draw "ARMS" text
-			DrawImage("graphics/SevHUD/standard/st_arms.png", (104, 168), DI_ITEM_OFFSETS);
+			DrawImage(filepath.."st_arms.png", (104, 168), DI_ITEM_OFFSETS);
 			// Draw weapons numbers
-			DrawImage(CPlayer.HasWeaponsInSlot(2)? "STYSNUM2" : "graphics/SevHUD/standard/st_gnum2.png", (111, 172), DI_ITEM_OFFSETS);
-			DrawImage(CPlayer.HasWeaponsInSlot(3)? "STYSNUM3" : "graphics/SevHUD/standard/st_gnum3.png", (123, 172), DI_ITEM_OFFSETS);
-			DrawImage(CPlayer.HasWeaponsInSlot(4)? "STYSNUM4" : "graphics/SevHUD/standard/st_gnum4.png", (135, 172), DI_ITEM_OFFSETS);
-			DrawImage(CPlayer.HasWeaponsInSlot(5)? "STYSNUM5" : "graphics/SevHUD/standard/st_gnum5.png", (111, 182), DI_ITEM_OFFSETS);
-			DrawImage(CPlayer.HasWeaponsInSlot(6)? "STYSNUM6" : "graphics/SevHUD/standard/st_gnum6.png", (123, 182), DI_ITEM_OFFSETS);
-			DrawImage(CPlayer.HasWeaponsInSlot(7)? "STYSNUM7" : "graphics/SevHUD/standard/st_gnum7.png", (135, 182), DI_ITEM_OFFSETS);
+			DrawImage(CPlayer.HasWeaponsInSlot(2)? "STYSNUM2" : filepath.."st_gnum2.png", (111, 172), DI_ITEM_OFFSETS);
+			DrawImage(CPlayer.HasWeaponsInSlot(3)? "STYSNUM3" : filepath.."st_gnum3.png", (123, 172), DI_ITEM_OFFSETS);
+			DrawImage(CPlayer.HasWeaponsInSlot(4)? "STYSNUM4" : filepath.."st_gnum4.png", (135, 172), DI_ITEM_OFFSETS);
+			DrawImage(CPlayer.HasWeaponsInSlot(5)? "STYSNUM5" : filepath.."st_gnum5.png", (111, 182), DI_ITEM_OFFSETS);
+			DrawImage(CPlayer.HasWeaponsInSlot(6)? "STYSNUM6" : filepath.."st_gnum6.png", (123, 182), DI_ITEM_OFFSETS);
+			DrawImage(CPlayer.HasWeaponsInSlot(7)? "STYSNUM7" : filepath.."st_gnum7.png", (135, 182), DI_ITEM_OFFSETS);
 		}
 	}
 }

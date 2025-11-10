@@ -2,4 +2,4 @@ version "4.14"
 
 #include "zscript/SevHUD/NashBarHealthTracer.zc"
 #include "zscript/SevHUD/NashBarHandler.zc"
-#include "zscript/SevHUD/NashBar.zc"
+#include "zscript/SevHUD/SevHUD.zc"
