@@ -50,9 +50,25 @@ class SevHUD_Square : DoomStatusBar
 		if ((state == HUD_StatusBar)||(state == HUD_Fullscreen))
 		{
 			BaseStatusBar.Draw(state, TicFrac);
-			DrawSevHUD(state);
-			// draw crosshair etc
-			DrawHealthBar(state);
+			
+			// Are we in intermission or a cutscene?
+			int intermission = GetAmount("IntermissionModeItem");
+			int cutscene = GetAmount("CutsceneModeItem");
+			
+			if (intermission + cutscene == 0)
+			{
+				DrawSevHUD(state);
+				// draw crosshair etc
+				DrawHealthBar(state);
+			}
+			else if (intermission)
+			{
+				if (state == HUD_StatusBar)
+				{
+					DrawImage("graphics/SevHUD/STBACK.png", (0, 168), DI_ITEM_OFFSETS);
+				}				
+				DrawImage("graphics/SevHUD/square/SQSTBRI.lmp", (0, 168), DI_ITEM_OFFSETS|DI_TRANSLATABLE);
+			}
 		}
 	}
 
