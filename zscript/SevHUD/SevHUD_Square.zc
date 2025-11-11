@@ -74,6 +74,43 @@ class SevHUD_Square : DoomStatusBar
 	//
 	//===========================================================================
 
+	void DrawGoonadeThrowMeter(void)
+	{
+		int amt = GetAmount("GoonadeThrowCheck");
+		switch (amt)
+		{
+			case 0:
+			// do nothing
+			break;
+
+			case 1:
+			DrawImage("GNMETER1", (128, 152), DI_ITEM_OFFSETS);
+			break;
+
+			case 2:
+			DrawImage("GNMETER2", (128, 152), DI_ITEM_OFFSETS);
+			break;
+
+			case 3:
+			DrawImage("GNMETER3", (128, 152), DI_ITEM_OFFSETS);
+			break;
+
+			case 4:
+			DrawImage("GNMETER4", (128, 152), DI_ITEM_OFFSETS);
+			break;
+
+			case 5:
+			DrawImage("GNMETER5", (128, 152), DI_ITEM_OFFSETS);
+			break;
+		}
+	}
+
+	//===========================================================================
+	//
+	//
+	//
+	//===========================================================================
+
 	void DrawStatusBarStats(int state, string filepath, HUDFont fnt)
 	{
 		
@@ -278,19 +315,7 @@ class SevHUD_Square : DoomStatusBar
 			baseYPos /= CleanYFac;
 			baseYPos += fnt.GetHeight();
 
-			// draw HP bar background and border
-/*			let brdTex = TexMan.CheckForTexture("graphics/SevHUD/HPBarBorder.png");
-			if (brdTex.IsValid())
-			{
-				Vector2 brdTexSize = TexMan.GetScaledSize(brdTex);
-				Screen.DrawTexture(brdTex, false,
-					(Screen.GetWidth() / 2) - ((brdTexSize.X / 2) * CleanXFac),
-					(baseYPos * CleanYFac),
-					DTA_CleanNoMove, true,
-					DTA_KeepRatio, true,
-					DTA_Alpha, healthBarAlpha);
-			}
-*/
+			// draw HP bar background
 			let bgTex = TexMan.CheckForTexture("graphics/SevHUD/HPBarShade.png");
 			if (bgTex.IsValid())
 			{
@@ -396,6 +421,9 @@ class SevHUD_Square : DoomStatusBar
 	{
 		string filepath = "graphics/SevHUD/square/";
 		HUDFont fnt = mDefaultIndexFont;
+		
+		// Square-specific stuff
+		DrawGoonadeThrowMeter();
 
 		if (CVar.GetCVar("sevhud_extra", CPlayer).GetBool())
 		{
