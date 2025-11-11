@@ -432,19 +432,18 @@ class SevHUD_Square : DoomStatusBar
 			DrawStatusBarStats(state, filepath, fnt);
 			DrawStatusBarPowerups();
 		}
-		
-		// Okay, time to draw the rest of the owl
-		// Or trace the owl from gzdoom.pk3's paper I guess
-				
+		else
+		{
+			// TODO: if extra info is disabled, draw powerups and goonade ammo like vanilla Square
+		}
+						
 		// DrawMainBar
 		if (state == HUD_StatusBar)
 		{
 			DrawImage("graphics/SevHUD/STBACK.png", (0, 168), DI_ITEM_OFFSETS);
 		}
-		if (state == HUD_Fullscreen)
-		{
-			DrawImage(filepath.."SQSTBAR.lmp", (0, 168), DI_ITEM_OFFSETS|DI_TRANSLATABLE);
-		}
+		
+		DrawImage(filepath.."SQSTBAR.lmp", (0, 168), DI_ITEM_OFFSETS|DI_TRANSLATABLE);
 		
 		Inventory a1 = GetCurrentAmmo();
 		if (a1 != null) DrawString(mHUDFont, FormatNumber(a1.Amount, 3), (49, 170), DI_TEXT_ALIGN_RIGHT|DI_NOSHADOW, Font.CR_RED);
@@ -456,15 +455,6 @@ class SevHUD_Square : DoomStatusBar
 		
 		DrawSevHUDAmmo(fnt);
 		
-		if (deathmatch || teamplay)
-		{
-			DrawString(mHUDFont, FormatNumber(CPlayer.FragCount, 3), (138, 171), DI_TEXT_ALIGN_RIGHT);
-		}
-	
-		if (multiplayer)
-		{
-			DrawImage("STFBANY", (143, 168), DI_ITEM_OFFSETS|DI_TRANSLATABLE);
-		}
 		
 		if (CPlayer.mo.InvSel != null && !Level.NoInventoryBar)
 		{
@@ -485,13 +475,17 @@ class SevHUD_Square : DoomStatusBar
 		
 		if (deathmatch || teamplay)
 		{
+			// Draw "FRAGS" text
+			DrawImage(filepath.."st_frag.lmp", (109, 191), DI_ITEM_OFFSETS);
+
 			// Draw amount of frags
-			DrawString(mHUDFont, FormatNumber(CPlayer.FragCount, 3), (138, 171), DI_TEXT_ALIGN_RIGHT);
+			DrawString(mHUDFont, FormatNumber(CPlayer.FragCount, 3), (139, 170), DI_TEXT_ALIGN_RIGHT, Font.CR_RED);
 		}
 		else
 		{
 			// Draw "ARMS" text
-			DrawImage(filepath.."SQSTARMS.lmp", (104, 168), DI_ITEM_OFFSETS);
+			DrawImage(filepath.."SQSTARMS.lmp", (105, 168), DI_ITEM_OFFSETS);
+			
 			// Draw weapons numbers
 			DrawImage(CPlayer.HasWeaponsInSlot(2)? "STYNUM2" : "STNNUM2", (111, 172), DI_ITEM_OFFSETS);
 			DrawImage(CPlayer.HasWeaponsInSlot(3)? "STYNUM3" : "STNNUM3", (122, 172), DI_ITEM_OFFSETS);
