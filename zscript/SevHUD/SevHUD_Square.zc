@@ -218,7 +218,8 @@ class SevHUD_Square : DoomStatusBar
 	void DrawStatusBarPowerups(void)
 	{
 		let invul = Powerup(CPlayer.mo.FindInventory("PowerInvulnerable"));
-		if (invul)
+		let flight = Powerup(CPlayer.mo.FindInventory("PowerFlight"));
+		if (invul&&flight)
 			DrawBar("graphics/SevHUD/square/st_holy.png", "graphics/SevHUD/square/st_holyback.png", int(Ceil(double(invul.EffectTics))), int(Ceil(double(invul.MaxEffectTics))), (-48, 168), 0, SHADER_VERT|SHADER_REVERSE, DI_ITEM_OFFSETS, 1.0);
 			// These specialized blank bar background graphics help the foreground graphic draw better. I was getting erroneous black pixels otherwise
 
@@ -241,7 +242,7 @@ class SevHUD_Square : DoomStatusBar
 		let allmap = Level.allmap;
 		let scanner = Powerup(CPlayer.mo.FindInventory("PowerScanner"));
 		if (allmap)
-			DrawImage("graphics/SevHUD/square/st_map.png", (-33, 172), DI_ITEM_OFFSETS);		
+			DrawImage("graphics/SevHUD/square/st_map.png", (-33, 172), DI_ITEM_OFFSETS);
 		if (scanner)
 			DrawBar("graphics/SevHUD/square/st_allmap.png", "graphics/SevHUD/square/st_mapback.png", int(Ceil(double(scanner.EffectTics))), int(Ceil(double(scanner.MaxEffectTics))), (-33, 172), 0, SHADER_VERT|SHADER_REVERSE, DI_ITEM_OFFSETS, 1.0);
 	}
@@ -252,9 +253,45 @@ class SevHUD_Square : DoomStatusBar
 	//
 	//===========================================================================
 
-	void DrawSquarePowerupBars(void)
+	void DrawSquarePowerups(HUDFont fnt)
 	{
-		// TODO: convert the default powerup meters to ZScript
+		let invul = Powerup(CPlayer.mo.FindInventory("PowerInvulnerable"));
+		let flight = Powerup(CPlayer.mo.FindInventory("PowerFlight"));
+		let fast = Powerup(CPlayer.mo.FindInventory("PowerEnergyDrink"));
+		let nodrown = Powerup(CPlayer.mo.FindInventory("PowerNoDrown"));
+		let strong = Powerup(CPlayer.mo.FindInventory("Power2xDamage"));
+		let envirosuit = Powerup(CPlayer.mo.FindInventory("PowerEnviroSuit"));
+		let scanner = Powerup(CPlayer.mo.FindInventory("PowerScanner"));
+
+		if ((invul&&flight)||fast||nodrown||strong||envirosuit||scanner)
+			DrawImage("FS_POWER", (0, 141), DI_ITEM_OFFSETS);					
+
+		// Same order as base game
+		if (scanner)
+			DrawBar("PW_SCAN", "PW_NULL", int(Ceil(double(scanner.EffectTics))), int(Ceil(double(scanner.MaxEffectTics))), (3, 156), 0, 0, DI_ITEM_OFFSETS, 1.0);
+
+		if (invul&&flight)
+			DrawBar("PW_ANGEL", "PW_NULL", int(Ceil(double(invul.EffectTics))), int(Ceil(double(invul.MaxEffectTics))), (3, 156), 0, 0, DI_ITEM_OFFSETS, 1.0);
+
+		if (strong)
+			DrawBar("PW_DEVIL", "PW_NULL", int(Ceil(double(strong.EffectTics))), int(Ceil(double(strong.MaxEffectTics))), (3, 156), 0, 0, DI_ITEM_OFFSETS, 1.0);
+
+		if (fast)
+			DrawBar("PW_SPEED", "PW_NULL", int(Ceil(double(fast.EffectTics))), int(Ceil(double(fast.MaxEffectTics))), (3, 156), 0, 0, DI_ITEM_OFFSETS, 1.0);
+
+		if (envirosuit)
+			DrawBar("PW_SUIT", "PW_NULL", int(Ceil(double(envirosuit.EffectTics))), int(Ceil(double(envirosuit.MaxEffectTics))), (3, 156), 0, 0, DI_ITEM_OFFSETS, 1.0);
+
+		if (nodrown)
+			DrawBar("PW_AIR", "PW_NULL", int(Ceil(double(nodrown.EffectTics))), int(Ceil(double(nodrown.MaxEffectTics))), (3, 156), 0, 0, DI_ITEM_OFFSETS, 1.0);
+
+		// Goonades aren't really a powerup but let's draw them in here anyway		
+		int amt = GetAmount("NumberofGoonades");
+		if (amt >= 1)
+		{
+			DrawImage("FS_NADES", (304, 156), DI_ITEM_OFFSETS);
+			DrawString(fnt, FormatNumber(amt, 3), (319, 162), DI_TEXT_ALIGN_RIGHT, Font.CR_WHITE);			
+		}
 	}
 	
 	//===========================================================================
@@ -604,7 +641,7 @@ class SevHUD_Square : DoomStatusBar
 		}
 		else
 		{
-			// TODO: if extra info is disabled, draw powerups and goonade ammo like vanilla Square
+			DrawSquarePowerups(fnt);
 		}
 						
 		// DrawMainBar
