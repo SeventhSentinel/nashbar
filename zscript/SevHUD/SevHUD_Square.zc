@@ -51,11 +51,10 @@ class SevHUD_Square : DoomStatusBar
 		{
 			BaseStatusBar.Draw(state, TicFrac);
 
-			
 			// Are we in intermission or a cutscene?
 			int intermission = GetAmount("IntermissionModeItem");
 			int cutscene = GetAmount("CutsceneModeItem");
-			
+
 			if (!cutscene)
 			{
 				// Draw the backing if the automap is open
@@ -136,12 +135,11 @@ class SevHUD_Square : DoomStatusBar
 
 	void DrawStatusBarStats(int state, string filepath, HUDFont fnt)
 	{
-		
 		int amt;
 		int pcnt;
 
 		int xoffset = 70;
-		
+
 		// goonades
 		amt = GetAmount("NumberofGoonades");
 		if (amt > 0)
@@ -180,7 +178,7 @@ class SevHUD_Square : DoomStatusBar
 //		if ((hours >= Level.sucktime) || (hours >= 10))
 		if (hours >= 10)
 			sucks = true;
-			
+
 		if (!sucks)
 		{
 			// hours
@@ -293,7 +291,7 @@ class SevHUD_Square : DoomStatusBar
 			DrawString(fnt, FormatNumber(amt, 3), (318, 162), DI_TEXT_ALIGN_RIGHT, Font.CR_WHITE);			
 		}
 	}
-	
+
 	//===========================================================================
 	//
 	//
@@ -525,22 +523,21 @@ class SevHUD_Square : DoomStatusBar
 	//
 	//===========================================================================
 
-
 	void DrawSevHUDAmmo(HUDFont fnt)
 	{
 		int amt1, maxamt;
 		[amt1, maxamt] = GetAmount("PaintAmmo");
 		DrawString(fnt, FormatNumber(amt1, 3), (262, 169), DI_TEXT_ALIGN_RIGHT);
 		DrawBar("graphics/SevHUD/square/AMMHBAR1.lmp", "AMMHBARE", amt1, maxamt, (265, 170), 0, SHADER_HORZ, DI_ITEM_OFFSETS, 1.0);
-		
+
 		[amt1, maxamt] = GetAmount("OoziAmmo");
 		DrawString(fnt, FormatNumber(amt1, 3), (262, 175), DI_TEXT_ALIGN_RIGHT);
 		DrawBar("graphics/SevHUD/square/AMMHBAR2.lmp", "AMMHBARE", amt1, maxamt, (265, 176), 0, SHADER_HORZ, DI_ITEM_OFFSETS, 1.0);
-		
+
 		[amt1, maxamt] = GetAmount("ShotboltAmmo");
 		DrawString(fnt, FormatNumber(amt1, 3), (262, 181), DI_TEXT_ALIGN_RIGHT);
 		DrawBar("graphics/SevHUD/square/AMMHBAR3.lmp", "AMMHBARE", amt1, maxamt, (265, 182), 0, SHADER_HORZ, DI_ITEM_OFFSETS, 1.0);
-		
+
 		[amt1, maxamt] = GetAmount("HellShellAmmo");
 		DrawString(fnt, FormatNumber(amt1, 3), (262, 187), DI_TEXT_ALIGN_RIGHT);
 		DrawBar("graphics/SevHUD/square/AMMHBAR4.lmp", "AMMHBARE", amt1, maxamt, (265, 188), 0, SHADER_HORZ, DI_ITEM_OFFSETS, 1.0);
@@ -643,21 +640,20 @@ class SevHUD_Square : DoomStatusBar
 		{
 			DrawSquarePowerups(fnt);
 		}
-						
+	
 		// DrawMainBar
-		
+
 		DrawImage(filepath.."SQSTBAR.lmp", (0, 168), DI_ITEM_OFFSETS|DI_TRANSLATABLE);
-		
+
 		Inventory a1 = GetCurrentAmmo();
 		if (a1 != null) DrawString(mHUDFont, FormatNumber(a1.Amount, 3), (49, 170), DI_TEXT_ALIGN_RIGHT|DI_NOSHADOW, Font.CR_RED);
 		DrawString(mHUDFont, FormatNumber(CPlayer.health, 3), (102, 170), DI_TEXT_ALIGN_RIGHT|DI_NOSHADOW, Font.CR_RED);
 		DrawString(mHUDFont, FormatNumber(GetArmorAmount(), 3), (224, 170), DI_TEXT_ALIGN_RIGHT|DI_NOSHADOW, Font.CR_RED);
 
 		DrawSquareKeys();
-		
+
 		DrawSevHUDAmmo(fnt);
-		
-		
+
 		if (CPlayer.mo.InvSel != null && !Level.NoInventoryBar)
 		{
 			DrawInventoryIcon(CPlayer.mo.InvSel, (160, 198), DI_DIMDEPLETED);
@@ -674,7 +670,7 @@ class SevHUD_Square : DoomStatusBar
 		{
 			DrawInventoryBar(diparms, (48, 169), 7, DI_ITEM_LEFT_TOP);
 		}
-		
+
 		if (deathmatch || teamplay)
 		{
 			// Draw "FRAGS" text
@@ -687,7 +683,7 @@ class SevHUD_Square : DoomStatusBar
 		{
 			// Draw "ARMS" text
 			DrawImage(filepath.."SQSTARMS.lmp", (105, 168), DI_ITEM_OFFSETS);
-			
+
 			// Draw weapons numbers
 			DrawImage(CPlayer.HasWeaponsInSlot(2)? "STYNUM2" : "STNNUM2", (111, 172), DI_ITEM_OFFSETS);
 			DrawImage(CPlayer.HasWeaponsInSlot(3)? "STYNUM3" : "STNNUM3", (122, 172), DI_ITEM_OFFSETS);
@@ -696,7 +692,7 @@ class SevHUD_Square : DoomStatusBar
 			DrawImage(CPlayer.HasWeaponsInSlot(6)? "STYNUM6" : "STNNUM6", (122, 182), DI_ITEM_OFFSETS);
 			DrawImage(CPlayer.HasWeaponsInSlot(7)? "STYNUM7" : "STNNUM7", (133, 182), DI_ITEM_OFFSETS);
 		}
-		
+
 		// Square-specific stuff
 		DrawPowerupCostumes();
 		DrawGoonadeThrowMeter();

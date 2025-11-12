@@ -3,6 +3,7 @@
 OPTMNU_SEVHUD = "SevHUD Options";
 OPTMNU_SEVHUD_HP_BAR = "Target Health Display";
 OPTMNU_SEVHUD_STYLE = "SevHUD Style";
-OPTMNU_SEVHUD_EXTRA = "Extended stats";
+OPTMNU_SEVHUD_EXTRA = "Extended Stats";
 OPTMNU_SEVHUD_PICKER = "Style Picker...";
 OPTMNU_SEVHUD_CHOOSESTYLE = "Choose the style that matches your loaded map pack";
+OPTMNU_SEVHUD_CHEXEXTRA = "Chex Arms & Ammo";
