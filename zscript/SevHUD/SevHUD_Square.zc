@@ -617,10 +617,47 @@ class SevHUD_Square : DoomStatusBar
 	//
 	//===========================================================================
 
+	void SevHUDSetupAnnoyer(void)
+	{
+		// get fonts
+		Font fnt = mHUDSmallFont.mFont;
+
+		// fonts are invalid, cancel drawing
+		if (!fnt)
+			return;
+
+		int annoyTxtColor = Font.CR_WHITE;
+
+		String txt = "$SEVHUD_SETUP_ANNOY";
+
+		// annoy
+		Screen.DrawText(fnt, annoyTxtColor,
+		(Screen.GetWidth() / 2) - ((fnt.StringWidth(txt) / 2) * CleanXFac),
+		(Screen.GetHeight() / 2),
+		txt,
+		DTA_CleanNoMove, true,
+		DTA_KeepRatio, true);
+	}
+
+	//===========================================================================
+	//
+	//
+	//
+	//===========================================================================
+
 	void DrawSevHUD(int state)
 	{
 		string filepath = "graphics/SevHUD/square/";
 		HUDFont fnt = mDefaultIndexFont;
+
+		// If you have default screenblocks, you probably need to do setup
+		CVar s = CVar.GetCVar("screenblocks", CPlayer);
+		if (s != null)
+		{
+			int blocks = s.GetInt();
+			if (blocks <= 10)
+				SevHUDSetupAnnoyer();
+		}
 
 		// Draw the rest of the HUD over the bowl gfx
 		let nodrown = Powerup(CPlayer.mo.FindInventory("PowerNoDrown"));

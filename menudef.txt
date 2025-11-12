@@ -36,7 +36,7 @@ OptionMenu SevHUDStylePicker
 {
 	Title "$OPTMNU_SEVHUD"
 
-	StaticText "OPTMNU_SEVHUD_CHOOSESTYLE"
+	StaticText "$OPTMNU_SEVHUD_CHOOSESTYLE"
 	StaticText ""
 	StaticText "IWADs"
 	Command "Doom Standard", "sevhud_style 1"
@@ -58,7 +58,7 @@ OptionMenu SevHUDStylePicker
 OptionMenu "SevHUDOptionMenu"
 {
 	Title "$OPTMNU_SEVHUD"
-	StaticText "Turn this off to use SevHUD"
+	StaticText "$OPTMNU_USE_SEVHUD"
 	Option "$ALTHUDMNU_ENABLE",					"hud_althud", "OnOff"
 	StaticText ""
 	StaticText "Turn this off too -- Classic scaling is unsupported"
@@ -69,7 +69,7 @@ OptionMenu "SevHUDOptionMenu"
 	StaticText ""
 	IfGame(doom)
 	{
-		StaticText "OPTMNU_SEVHUD_CHOOSESTYLE"
+		StaticText "$OPTMNU_SEVHUD_CHOOSESTYLE"
 		Option "$OPTMNU_SEVHUD_STYLE",			"sevhud_style", 			"SevHUDStyle"
 		Submenu "$OPTMNU_SEVHUD_PICKER", "SevHUDStylePicker"
 		StaticText ""
@@ -83,7 +83,7 @@ OptionMenu "SevHUDOptionMenu"
 	StaticText "Adjust to your preferred size"
 	Slider "$SCALEMNU_HUD_SCALEFACTOR",			"hud_scalefactor", 0.0, 1.0, 0.025, 3, "hud_oldscale", 1
 	StaticText ""
-	StaticText "Open the automap and adjust until all erroneous lines disappear"
+	StaticText "Open the automap and adjust until graphical errors disappear"
 	StaticText "(If you often switch between multiple resolutions, ensure it looks correct in all of them)"
 	Slider "HUD scale factor (Fine)",			"hud_scalefactor", 0.0, 1.0, 0.001, 3, "hud_oldscale", 1
 	StaticText ""

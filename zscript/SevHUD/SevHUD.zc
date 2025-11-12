@@ -356,6 +356,12 @@ class SevHUD : DoomStatusBar
 		}
 	}
 
+	//===========================================================================
+	//
+	//
+	//
+	//===========================================================================
+
 	void DrawSevHUDAmmo(HUDFont fnt)
 	{
 		int amt1, maxamt;
@@ -382,10 +388,48 @@ class SevHUD : DoomStatusBar
 	//
 	//===========================================================================
 
+	void SevHUDSetupAnnoyer(void)
+	{
+		// get fonts
+		Font fnt = mHUDSmallFont.mFont;
+
+		// fonts are invalid, cancel drawing
+		if (!fnt)
+			return;
+
+		int annoyTxtColor = Font.CR_WHITE;
+
+		String txt = "$SEVHUD_SETUP_ANNOY";
+
+		// annoy
+		Screen.DrawText(fnt, annoyTxtColor,
+		(Screen.GetWidth() / 2) - ((fnt.StringWidth(txt) / 2) * CleanXFac),
+		(Screen.GetHeight() / 2),
+		txt,
+		DTA_CleanNoMove, true,
+		DTA_KeepRatio, true);
+	}
+
+	//===========================================================================
+	//
+	//
+	//
+	//===========================================================================
+
 	void DrawSevHUD(int state)
 	{
-		string filepath = "graphics/SevHUD/standard/";
+		string basefilepath = "graphics/SevHUD/";
+		string folder = "standard";
 		HUDFont fnt = mDefaultIndexFont;
+
+		// If you have default screenblocks, you probably need to do setup
+		CVar s = CVar.GetCVar("screenblocks", CPlayer);
+		if (s != null)
+		{
+			int blocks = s.GetInt();
+			if (blocks <= 10)
+				SevHUDSetupAnnoyer();
+		}
 
 		// Get style pref
 		CVar c = CVar.GetCVar("sevhud_style", CPlayer);
@@ -397,49 +441,51 @@ class SevHUD : DoomStatusBar
 			{
 				// Wow! It's fucking nothing
 				case 0:
-					filepath = "graphics/SevHUD/blank/";
+					folder = "blank";
 					break;
 
 				case 2:
-					filepath = "graphics/SevHUD/legacyofrust/";
+					folder = "legacyofrust";
 					break;
 
 				case 3:
-					filepath = "graphics/SevHUD/freedoom/";
+					folder = "freedoom";
 					fnt = mFreeIndexFont;
 					break;
 
 				case 4:
-					filepath = "graphics/SevHUD/freestyle/";
+					folder = "freestyle";
 					break;
 
 				case 5:
-					filepath = "graphics/SevHUD/btsx1/";
+					folder = "btsx1";
 					fnt = mBTSX1IndexFont;
 					break;
 
 				case 6:
-					filepath = "graphics/SevHUD/btsx2/";
+					folder = "btsx2";
 					fnt = mBTSX2IndexFont;
 					break;
 
 				case 7:
-					filepath = "graphics/SevHUD/pl2/";
+					folder = "pl2";
 					break;
 
 				case 8:
-					filepath = "graphics/SevHUD/eviternity/";
+					folder = "eviternity";
 					break;
 
 				case 9:
-					filepath = "graphics/SevHUD/eviternity2/";
+					folder = "eviternity2";
 					break;
 			}
 		}
+		string filepath = basefilepath..folder.."/";
+
 
 		if (CVar.GetCVar("sevhud_extra", CPlayer).GetBool())
 		{
-			DrawImage("graphics/SevHUD/extra/st_extra.png", (-53, 168), DI_ITEM_OFFSETS);
+			DrawImage(basefilepath.."extra/st_extra.png", (-53, 168), DI_ITEM_OFFSETS);
 			DrawImage(filepath.."st_stats.png", (320, 168), DI_ITEM_OFFSETS);
 			DrawStatusBarStats(state, filepath, fnt);
 			DrawStatusBarPowerups();
