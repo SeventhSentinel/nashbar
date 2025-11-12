@@ -432,6 +432,10 @@ class SevHUD : DoomStatusBar
 				case 8:
 					filepath = "graphics/SevHUD/eviternity/";
 					break;
+
+				case 9:
+					filepath = "graphics/SevHUD/eviternity2/";
+					break;
 			}
 		}
 
