@@ -338,6 +338,30 @@ class SevHUD_Square : DoomStatusBar
 	//
 	//===========================================================================
 
+	void DrawFishBowl(void)
+	{
+		// draw left fishbowl glass gfx
+		let leftTex = TexMan.CheckForTexture("BOWLSCRL");
+		if (leftTex.IsValid())
+		{
+			Screen.DrawTexture(leftTex, false, 0, 0, DTA_CleanNoMove, true);
+		}
+
+		// draw right fishbowl glass gfx
+		let rightTex = TexMan.CheckForTexture("BOWLSCRR");
+		if (rightTex.IsValid())
+		{
+			Vector2 rightTexSize = TexMan.GetScaledSize(rightTex);
+			Screen.DrawTexture(rightTex, false, (Screen.GetWidth() - (rightTexSize.X * CleanXFac)), (Screen.GetHeight() - (rightTexSize.Y * CleanYFac)), DTA_CleanNoMove, true);
+		}
+	}
+
+	//===========================================================================
+	//
+	//
+	//
+	//===========================================================================
+
 	void DrawHealthBar(int state)
 	{
 		if (!CPlayer || !CPlayer.mo)
@@ -458,6 +482,13 @@ class SevHUD_Square : DoomStatusBar
 		}
 	}
 
+	//===========================================================================
+	//
+	//
+	//
+	//===========================================================================
+
+
 	void DrawSevHUDAmmo(HUDFont fnt)
 	{
 		int amt1, maxamt;
@@ -493,6 +524,7 @@ class SevHUD_Square : DoomStatusBar
 		bool locks[17];
 		for(int i = 0; i < 17; i++) locks[i] = CPlayer.mo.CheckKeys(i + 1, false, true);
 
+		// Same order as base game
 		if (locks[1])
 			DrawImage("STKEYS0", (230, 171), DI_ITEM_OFFSETS);
 
@@ -560,9 +592,7 @@ class SevHUD_Square : DoomStatusBar
 		let nodrown = Powerup(CPlayer.mo.FindInventory("PowerNoDrown"));
 		if (nodrown)
 		{
-			// TODO: How the fuck do you get these things over to the corners
-//			DrawImage("BOWLSCRL", (0, 0), DI_ITEM_LEFT_TOP |DI_SCREEN_LEFT_TOP);
-//			DrawImage("BOWLSCRR", (-65, -140), DI_ITEM_OFFSETS|DI_SCREEN_RIGHT_BOTTOM);
+			DrawFishBowl();
 		}
 
 		if (CVar.GetCVar("sevhud_extra", CPlayer).GetBool())
