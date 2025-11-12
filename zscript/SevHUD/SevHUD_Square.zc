@@ -1,6 +1,6 @@
 //===========================================================================
 //
-// SevHUD
+// SevHUD for Adventures of Square
 //
 // ZScript code: Copyright (C) 2020 - 2025 Nash Muhandes
 // Heavily modified by SeventhSentinel
@@ -50,23 +50,30 @@ class SevHUD_Square : DoomStatusBar
 		if ((state == HUD_StatusBar)||(state == HUD_Fullscreen))
 		{
 			BaseStatusBar.Draw(state, TicFrac);
+
 			
 			// Are we in intermission or a cutscene?
 			int intermission = GetAmount("IntermissionModeItem");
 			int cutscene = GetAmount("CutsceneModeItem");
 			
+			if (!cutscene)
+			{
+				// Draw the backing if the automap is open
+				if (state == HUD_StatusBar)
+				{
+					DrawImage("graphics/SevHUD/STBACK.png", (0, 168), DI_ITEM_OFFSETS);
+				}
+			}
+
 			if (intermission + cutscene == 0)
 			{
 				DrawSevHUD(state);
 				// draw crosshair etc
 				DrawHealthBar(state);
 			}
+
 			else if (intermission)
 			{
-				if (state == HUD_StatusBar)
-				{
-					DrawImage("graphics/SevHUD/STBACK.png", (0, 168), DI_ITEM_OFFSETS);
-				}				
 				DrawImage("graphics/SevHUD/square/SQSTBRI.lmp", (0, 168), DI_ITEM_OFFSETS|DI_TRANSLATABLE);
 			}
 		}
@@ -212,28 +219,42 @@ class SevHUD_Square : DoomStatusBar
 	{
 		let invul = Powerup(CPlayer.mo.FindInventory("PowerInvulnerable"));
 		if (invul)
-			DrawBar("graphics/SevHUD/extra/st_invul.png", "graphics/SevHUD/extra_back/st_orbback.png", int(Ceil(double(invul.EffectTics))), int(Ceil(double(invul.MaxEffectTics))), (-48, 172), 0, SHADER_VERT|SHADER_REVERSE, DI_ITEM_OFFSETS, 1.0);
-			// These specialized blank bar background graphics help the foreground graphic draw better. I was getting erroneous black pixels otherwise ~Sev
+			DrawBar("graphics/SevHUD/square/st_holy.png", "graphics/SevHUD/square/st_holyback.png", int(Ceil(double(invul.EffectTics))), int(Ceil(double(invul.MaxEffectTics))), (-48, 168), 0, SHADER_VERT|SHADER_REVERSE, DI_ITEM_OFFSETS, 1.0);
+			// These specialized blank bar background graphics help the foreground graphic draw better. I was getting erroneous black pixels otherwise
 
-		let lightamp = Powerup(CPlayer.mo.FindInventory("PowerLightAmp"));
-		if (lightamp)
-			DrawBar("graphics/SevHUD/extra/st_lightamp.png", "graphics/SevHUD/extra_back/st_lightampback.png", int(Ceil(double(lightamp.EffectTics))), int(Ceil(double(lightamp.MaxEffectTics))), (-33, 174), 0, SHADER_VERT|SHADER_REVERSE, DI_ITEM_OFFSETS, 1.0);
+		let fast = Powerup(CPlayer.mo.FindInventory("PowerEnergyDrink"));
+		if (fast)
+			DrawBar("graphics/SevHUD/square/st_speed.png", "graphics/SevHUD/square/st_speedback.png", int(Ceil(double(fast.EffectTics))), int(Ceil(double(fast.MaxEffectTics))), (-30, 185), 0, SHADER_VERT|SHADER_REVERSE, DI_ITEM_OFFSETS, 1.0);
 
-		let invis = Powerup(CPlayer.mo.FindInventory("PowerInvisibility"));
-		if (invis)
-			DrawBar("graphics/SevHUD/extra/st_invis.png", "graphics/SevHUD/extra_back/st_orbback.png", int(Ceil(double(invis.EffectTics))), int(Ceil(double(invis.MaxEffectTics))), (-17, 172), 0, SHADER_VERT|SHADER_REVERSE, DI_ITEM_OFFSETS, 1.0);
+		let nodrown = Powerup(CPlayer.mo.FindInventory("PowerNoDrown"));
+		if (nodrown)
+			DrawBar("graphics/SevHUD/square/st_air.png", "graphics/SevHUD/square/st_airback.png", int(Ceil(double(nodrown.EffectTics))), int(Ceil(double(nodrown.MaxEffectTics))), (-17, 186), 0, SHADER_VERT|SHADER_REVERSE, DI_ITEM_OFFSETS, 1.0);
 
-		let berserk = CPlayer.mo.FindInventory("PowerStrength");
-		if (berserk)
-			DrawImage("graphics/SevHUD/extra/st_berserk.png", (-48, 188), DI_ITEM_OFFSETS);
+		let strong = Powerup(CPlayer.mo.FindInventory("Power2xDamage"));
+		if (strong)
+			DrawBar("graphics/SevHUD/square/st_damage.png", "graphics/SevHUD/square/st_damageback.png", int(Ceil(double(strong.EffectTics))), int(Ceil(double(strong.MaxEffectTics))), (-17, 172), 0, SHADER_VERT|SHADER_REVERSE, DI_ITEM_OFFSETS, 1.0);
 
-		let radsuit = Powerup(CPlayer.mo.FindInventory("PowerIronFeet"));
-		if (radsuit)
-			DrawBar("graphics/SevHUD/extra/st_radsuit.png", "graphics/SevHUD/extra_back/st_radsuitback.png", int(Ceil(double(radSuit.EffectTics))), int(Ceil(double(radSuit.MaxEffectTics))), (-33, 185), 0, SHADER_VERT|SHADER_REVERSE, DI_ITEM_OFFSETS, 1.0);
+		let envirosuit = Powerup(CPlayer.mo.FindInventory("PowerEnviroSuit"));
+		if (envirosuit)
+			DrawBar("graphics/SevHUD/square/st_suit.png", "graphics/SevHUD/square/st_suitback.png", int(Ceil(double(envirosuit.EffectTics))), int(Ceil(double(envirosuit.MaxEffectTics))), (-48, 189), 0, SHADER_VERT|SHADER_REVERSE, DI_ITEM_OFFSETS, 1.0);
 
 		let allmap = Level.allmap;
+		let scanner = Powerup(CPlayer.mo.FindInventory("PowerScanner"));
 		if (allmap)
-			DrawImage("graphics/SevHUD/extra/st_allmap.png", (-17, 186), DI_ITEM_OFFSETS);
+			DrawImage("graphics/SevHUD/square/st_map.png", (-33, 172), DI_ITEM_OFFSETS);		
+		if (scanner)
+			DrawBar("graphics/SevHUD/square/st_allmap.png", "graphics/SevHUD/square/st_mapback.png", int(Ceil(double(scanner.EffectTics))), int(Ceil(double(scanner.MaxEffectTics))), (-33, 172), 0, SHADER_VERT|SHADER_REVERSE, DI_ITEM_OFFSETS, 1.0);
+	}
+
+	//===========================================================================
+	//
+	//
+	//
+	//===========================================================================
+
+	void DrawSquarePowerups(void)
+	{
+		// TODO: convert the default powerup meters to ZScript
 	}
 
 	//===========================================================================
@@ -247,6 +268,8 @@ class SevHUD_Square : DoomStatusBar
 		int flags = DI_SCREEN_LEFT_BOTTOM;
 		let mug = GetMugShot(5);
 		DrawTexture(mug, (104, -1), flags);
+		
+		// TODO: add the costumes to the mugshot
 	}
 
 	//===========================================================================
@@ -454,10 +477,6 @@ class SevHUD_Square : DoomStatusBar
 		}
 						
 		// DrawMainBar
-		if (state == HUD_StatusBar)
-		{
-			DrawImage("graphics/SevHUD/STBACK.png", (0, 168), DI_ITEM_OFFSETS);
-		}
 		
 		DrawImage(filepath.."SQSTBAR.lmp", (0, 168), DI_ITEM_OFFSETS|DI_TRANSLATABLE);
 		
