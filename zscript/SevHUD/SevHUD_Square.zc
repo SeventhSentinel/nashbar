@@ -290,7 +290,7 @@ class SevHUD_Square : DoomStatusBar
 		if (amt >= 1)
 		{
 			DrawImage("FS_NADES", (304, 156), DI_ITEM_OFFSETS);
-			DrawString(fnt, FormatNumber(amt, 3), (319, 162), DI_TEXT_ALIGN_RIGHT, Font.CR_WHITE);			
+			DrawString(fnt, FormatNumber(amt, 3), (318, 162), DI_TEXT_ALIGN_RIGHT, Font.CR_WHITE);			
 		}
 	}
 	
