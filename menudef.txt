@@ -18,6 +18,12 @@ OptionValue SevHUDSize
 	12.0, "Automap Only"
 }
 
+OptionValue SevHUDChexExtra
+{
+	0, "Vanilla"
+	1, "Arms & Ammo"
+}
+
 OptionValue SevHUDStyle
 {
 	0, "0: Blank"
@@ -32,10 +38,23 @@ OptionValue SevHUDStyle
 	9, "9: Eviternity II"
 }
 
-OptionValue SevHUDChexExtra
+
+OptionMenu SevHUDStylePicker
 {
-	0, "Vanilla"
-	1, "Arms & Ammo"
+	Title "$OPTMNU_SEVHUD"
+
+	StaticText "Choose the status bar that matches your currently loaded wad"
+	StaticText ""
+	Command "Blank", "sevhud_style 0"
+	Command "Standard", "sevhud_style 1"
+	Command "Cells = Fuel (Legacy of Rust)", "sevhud_style 2"
+	Command "FreeDoom", "sevhud_style 3"
+	Command "Freestyle", "sevhud_style 4"
+	Command "Back to Saturn X: Episode 1", "sevhud_style 5"
+	Command "Back to Saturn X: Episode 2", "sevhud_style 6"
+	Command "Plutonia 2/PRCP", "sevhud_style 7"
+	Command "Eviternity", "sevhud_style 8"
+	Command "Eviternity II", "sevhud_style 9"
 }
 
 OptionMenu "SevHUDOptionMenu"
@@ -54,6 +73,7 @@ OptionMenu "SevHUDOptionMenu"
 	{
 		StaticText "Choose the style that matches your loaded map pack"
 		Option "$OPTMENU_SEVHUD_STYLE",			"sevhud_style", 			"SevHUDStyle"
+		Submenu "$OPTMNU_SEVHUD_PICKER", "SevHUDStylePicker"
 		StaticText ""
 	}
 	IfGame(chex)
