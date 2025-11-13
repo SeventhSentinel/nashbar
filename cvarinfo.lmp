@@ -1,3 +1,0 @@
-user bool nashbar_helmet = false;
-user bool nashbar_hpbar = true;
-user bool nashbar_transparent = false;

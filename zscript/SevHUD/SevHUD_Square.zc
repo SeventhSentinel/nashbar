@@ -1,0 +1,737 @@
+//===========================================================================
+//
+// SevHUD for Adventures of Square
+//
+// ZScript code: Copyright (C) 2020 - 2025 Nash Muhandes
+// Modifications: Copyright (C) 2025 SeventhSentinel
+//
+// License: MIT
+//
+//===========================================================================
+
+class SevHUD_Square : DoomStatusBar
+{
+	const X_PADDING = 8;
+
+	HUDFont mHUDSmallFont;
+	HUDFont mHUDConFont;
+	
+	HUDFont mDefaultIndexFont;
+	
+	Actor prevAimTarget;
+	double healthBarAlpha;
+
+	//===========================================================================
+	//
+	//
+	//
+	//===========================================================================
+
+	override void Init(void)
+	{
+		Super.Init();
+
+		mHUDSmallFont = HUDFont.Create(smallfont);
+		mHUDConFont = HUDFont.Create(confont);
+		
+		mDefaultIndexFont = HUDFont.Create("DefaultIndexFont");
+
+		InitSevHUD();
+	}
+
+	override void NewGame(void)
+	{
+		Super.NewGame();
+		InitSevHUD();
+	}
+
+	override void Draw(int state, double TicFrac)
+	{
+		if ((state == HUD_StatusBar)||(state == HUD_Fullscreen))
+		{
+			BaseStatusBar.Draw(state, TicFrac);
+
+			// Are we in intermission or a cutscene?
+			int intermission = GetAmount("IntermissionModeItem");
+			int cutscene = GetAmount("CutsceneModeItem");
+
+			if (!cutscene)
+			{
+				// Draw the backing if the automap is open
+				if (state == HUD_StatusBar)
+				{
+					DrawImage("graphics/SevHUD/STBACK.png", (0, 168), DI_ITEM_OFFSETS);
+				}
+			}
+
+			if (intermission + cutscene == 0)
+			{
+				DrawSevHUD(state);
+				// draw crosshair etc
+				DrawHealthBar(state);
+			}
+
+			else if (intermission)
+			{
+				DrawImage("graphics/SevHUD/square/SQSTBRI.lmp", (0, 168), DI_ITEM_OFFSETS|DI_TRANSLATABLE);
+			}
+		}
+	}
+
+	//===========================================================================
+	//
+	//
+	//
+	//===========================================================================
+
+	void InitSevHUD(void)
+	{
+		prevAimTarget = NULL;
+		healthBarAlpha = 0.;
+	}
+
+	//===========================================================================
+	//
+	//
+	//
+	//===========================================================================
+
+	void DrawGoonadeThrowMeter(void)
+	{
+		int amt = GetAmount("GoonadeThrowCheck");
+		switch (amt)
+		{
+			case 0:
+			// do nothing
+			break;
+
+			case 1:
+			DrawImage("GNMETER1", (128, 152), DI_ITEM_OFFSETS);
+			break;
+
+			case 2:
+			DrawImage("GNMETER2", (128, 152), DI_ITEM_OFFSETS);
+			break;
+
+			case 3:
+			DrawImage("GNMETER3", (128, 152), DI_ITEM_OFFSETS);
+			break;
+
+			case 4:
+			DrawImage("GNMETER4", (128, 152), DI_ITEM_OFFSETS);
+			break;
+
+			case 5:
+			DrawImage("GNMETER5", (128, 152), DI_ITEM_OFFSETS);
+			break;
+		}
+	}
+
+	//===========================================================================
+	//
+	//
+	//
+	//===========================================================================
+
+	void DrawStatusBarStats(int state, string filepath, HUDFont fnt)
+	{
+		int amt;
+		int pcnt;
+
+		int xoffset = 70;
+
+		// goonades
+		amt = GetAmount("NumberofGoonades");
+		if (amt > 0)
+		{
+			DrawString(fnt, FormatNumber(amt, 3), (297 + xoffset, 169), DI_TEXT_ALIGN_RIGHT, Font.CR_GREEN);
+		}
+		else
+		{
+			DrawString(fnt, FormatNumber(0, 3), (297 + xoffset, 169), DI_TEXT_ALIGN_RIGHT);
+		}
+
+		// kills
+		pcnt = Level.total_monsters ? 100 * Level.killed_monsters / Level.total_monsters : 100;
+		amt = multiplayer ? CPlayer.killcount : pcnt;
+		DrawString(fnt, FormatNumber(amt, 3), (288 + xoffset, 175), DI_TEXT_ALIGN_RIGHT);
+
+		// items
+		pcnt = Level.total_items ? 100 * Level.found_items / Level.total_items : 100;
+		amt = multiplayer ? CPlayer.itemcount : pcnt;
+		DrawString(fnt, FormatNumber(amt, 3), (288 + xoffset, 181), DI_TEXT_ALIGN_RIGHT);
+
+		// secrets
+		pcnt = Level.total_secrets ? 100 * Level.found_secrets / Level.total_secrets : 100;
+		amt = multiplayer ? CPlayer.secretcount : pcnt;
+		DrawString(fnt, FormatNumber(amt, 3), (288 + xoffset, 187), DI_TEXT_ALIGN_RIGHT);
+
+		// time stuff
+		bool sucks = false;
+		int hoursoffset = 0;
+		int minsdigits = 1;
+		int timeSeconds = Thinker.Tics2Seconds(Level.time);
+		int hours   = timeSeconds / 3600;
+		int minutes = (timeSeconds % 3600) / 60;
+		int seconds = timeSeconds % 60;
+
+//		if ((hours >= Level.sucktime) || (hours >= 10))
+		if (hours >= 10)
+			sucks = true;
+
+		if (!sucks)
+		{
+			// hours
+			if (hours >= 1)
+			{
+				hoursoffset = 1;
+				amt = hours;
+				DrawString(fnt, FormatNumber(amt, 1, format: 2), (274 + xoffset+2, 193), DI_TEXT_ALIGN_RIGHT);
+				DrawImage(filepath.."st_colon.png", (347, 194), DI_ITEM_OFFSETS);
+			}
+
+			// minutes
+			if ((minutes >= 10) || (hours >= 1))
+				minsdigits = 2;
+			amt = minutes;
+			DrawString(fnt, FormatNumber(amt, minsdigits, format: 2), (286 + xoffset+hoursoffset, 193), DI_TEXT_ALIGN_RIGHT);
+
+			// seconds
+			amt = seconds;
+			DrawString(fnt, FormatNumber(amt, 2, format: 2), (298 + xoffset, 193), DI_TEXT_ALIGN_RIGHT);
+		}
+		else
+		{
+			// time sucks
+			DrawImage(filepath.."st_sucks.png", (344, 193), DI_ITEM_OFFSETS);
+		}
+	}
+
+	//===========================================================================
+	//
+	//
+	//
+	//===========================================================================
+
+	void DrawStatusBarPowerups(void)
+	{
+		let invul = Powerup(CPlayer.mo.FindInventory("PowerInvulnerable"));
+		let flight = Powerup(CPlayer.mo.FindInventory("PowerFlight"));
+		if (invul&&flight)
+			DrawBar("graphics/SevHUD/square/st_holy.png", "graphics/SevHUD/square/st_holyback.png", int(Ceil(double(invul.EffectTics))), int(Ceil(double(invul.MaxEffectTics))), (-48, 168), 0, SHADER_VERT|SHADER_REVERSE, DI_ITEM_OFFSETS, 1.0);
+			// These specialized blank bar background graphics help the foreground graphic draw better. I was getting erroneous black pixels otherwise
+
+		let fast = Powerup(CPlayer.mo.FindInventory("PowerEnergyDrink"));
+		if (fast)
+			DrawBar("graphics/SevHUD/square/st_speed.png", "graphics/SevHUD/square/st_speedback.png", int(Ceil(double(fast.EffectTics))), int(Ceil(double(fast.MaxEffectTics))), (-30, 185), 0, SHADER_VERT|SHADER_REVERSE, DI_ITEM_OFFSETS, 1.0);
+
+		let nodrown = Powerup(CPlayer.mo.FindInventory("PowerNoDrown"));
+		if (nodrown)
+			DrawBar("graphics/SevHUD/square/st_air.png", "graphics/SevHUD/square/st_airback.png", int(Ceil(double(nodrown.EffectTics))), int(Ceil(double(nodrown.MaxEffectTics))), (-17, 186), 0, SHADER_VERT|SHADER_REVERSE, DI_ITEM_OFFSETS, 1.0);
+
+		let strong = Powerup(CPlayer.mo.FindInventory("Power2xDamage"));
+		if (strong)
+			DrawBar("graphics/SevHUD/square/st_damage.png", "graphics/SevHUD/square/st_damageback.png", int(Ceil(double(strong.EffectTics))), int(Ceil(double(strong.MaxEffectTics))), (-17, 172), 0, SHADER_VERT|SHADER_REVERSE, DI_ITEM_OFFSETS, 1.0);
+
+		let envirosuit = Powerup(CPlayer.mo.FindInventory("PowerEnviroSuit"));
+		if (envirosuit)
+			DrawBar("graphics/SevHUD/square/st_suit.png", "graphics/SevHUD/square/st_suitback.png", int(Ceil(double(envirosuit.EffectTics))), int(Ceil(double(envirosuit.MaxEffectTics))), (-48, 189), 0, SHADER_VERT|SHADER_REVERSE, DI_ITEM_OFFSETS, 1.0);
+
+		let allmap = Level.allmap;
+		let scanner = Powerup(CPlayer.mo.FindInventory("PowerScanner"));
+		if (allmap)
+			DrawImage("graphics/SevHUD/square/st_map.png", (-33, 172), DI_ITEM_OFFSETS);
+		if (scanner)
+			DrawBar("graphics/SevHUD/square/st_allmap.png", "graphics/SevHUD/square/st_mapback.png", int(Ceil(double(scanner.EffectTics))), int(Ceil(double(scanner.MaxEffectTics))), (-33, 172), 0, SHADER_VERT|SHADER_REVERSE, DI_ITEM_OFFSETS, 1.0);
+	}
+
+	//===========================================================================
+	//
+	//
+	//
+	//===========================================================================
+
+	void DrawSquarePowerups(HUDFont fnt)
+	{
+		let invul = Powerup(CPlayer.mo.FindInventory("PowerInvulnerable"));
+		let flight = Powerup(CPlayer.mo.FindInventory("PowerFlight"));
+		let fast = Powerup(CPlayer.mo.FindInventory("PowerEnergyDrink"));
+		let nodrown = Powerup(CPlayer.mo.FindInventory("PowerNoDrown"));
+		let strong = Powerup(CPlayer.mo.FindInventory("Power2xDamage"));
+		let envirosuit = Powerup(CPlayer.mo.FindInventory("PowerEnviroSuit"));
+		let scanner = Powerup(CPlayer.mo.FindInventory("PowerScanner"));
+
+		if ((invul&&flight)||fast||nodrown||strong||envirosuit||scanner)
+			DrawImage("FS_POWER", (0, 141), DI_ITEM_OFFSETS);					
+
+		// Same order as base game
+		if (scanner)
+			DrawBar("PW_SCAN", "PW_NULL", int(Ceil(double(scanner.EffectTics))), int(Ceil(double(scanner.MaxEffectTics))), (3, 156), 0, 0, DI_ITEM_OFFSETS, 1.0);
+
+		if (invul&&flight)
+			DrawBar("PW_ANGEL", "PW_NULL", int(Ceil(double(invul.EffectTics))), int(Ceil(double(invul.MaxEffectTics))), (3, 156), 0, 0, DI_ITEM_OFFSETS, 1.0);
+
+		if (strong)
+			DrawBar("PW_DEVIL", "PW_NULL", int(Ceil(double(strong.EffectTics))), int(Ceil(double(strong.MaxEffectTics))), (3, 156), 0, 0, DI_ITEM_OFFSETS, 1.0);
+
+		if (fast)
+			DrawBar("PW_SPEED", "PW_NULL", int(Ceil(double(fast.EffectTics))), int(Ceil(double(fast.MaxEffectTics))), (3, 156), 0, 0, DI_ITEM_OFFSETS, 1.0);
+
+		if (envirosuit)
+			DrawBar("PW_SUIT", "PW_NULL", int(Ceil(double(envirosuit.EffectTics))), int(Ceil(double(envirosuit.MaxEffectTics))), (3, 156), 0, 0, DI_ITEM_OFFSETS, 1.0);
+
+		if (nodrown)
+			DrawBar("PW_AIR", "PW_NULL", int(Ceil(double(nodrown.EffectTics))), int(Ceil(double(nodrown.MaxEffectTics))), (3, 156), 0, 0, DI_ITEM_OFFSETS, 1.0);
+
+		// Goonades aren't really a powerup but let's draw them in here anyway		
+		int amt = GetAmount("NumberofGoonades");
+		if (amt >= 1)
+		{
+			DrawImage("FS_NADES", (304, 156), DI_ITEM_OFFSETS);
+			DrawString(fnt, FormatNumber(amt, 3), (318, 162), DI_TEXT_ALIGN_RIGHT, Font.CR_WHITE);			
+		}
+	}
+
+	//===========================================================================
+	//
+	//
+	//
+	//===========================================================================
+
+	void DrawPowerupCostumes(void)
+	{
+		// Same order as base game
+		let scanner = Powerup(CPlayer.mo.FindInventory("PowerScanner"));
+		if (scanner)
+			DrawImage("PF_ANTEN", (143, 168), DI_ITEM_OFFSETS);
+
+		let invul = Powerup(CPlayer.mo.FindInventory("PowerInvulnerable"));
+		if (invul)
+			DrawImage("PF_HALO", (143, 168), DI_ITEM_OFFSETS);
+
+		let strong = Powerup(CPlayer.mo.FindInventory("Power2xDamage"));
+		if (strong)
+			DrawImage("PF_HORNS", (143, 168), DI_ITEM_OFFSETS);
+
+		let fast = Powerup(CPlayer.mo.FindInventory("PowerEnergyDrink"));
+		if (fast)
+			DrawImage("PF_BUBBL", (143, 168), DI_ITEM_OFFSETS);	
+
+		let envirosuit = Powerup(CPlayer.mo.FindInventory("PowerEnviroSuit"));
+		if (envirosuit)
+			DrawImage("PF_SUIT", (143, 168), DI_ITEM_OFFSETS);
+
+		let nodrown = Powerup(CPlayer.mo.FindInventory("PowerNoDrown"));
+		if (nodrown)
+			DrawImage("PF_BOWL", (143, 168), DI_ITEM_OFFSETS);
+	}
+
+	//===========================================================================
+	//
+	//
+	//
+	//===========================================================================
+
+	void DrawMugshot(void)
+	{
+		int flags = DI_SCREEN_LEFT_BOTTOM;
+		let mug = GetMugShot(5);
+		DrawTexture(mug, (104, -1), flags);
+	}
+
+	//===========================================================================
+	//
+	//
+	//
+	//===========================================================================
+
+	// taken from GZDoom's vdraw.cpp
+	int GetUIScale(int altval)
+	{
+		int scaleval;
+		if (altval > 0)
+			scaleval = altval;
+		else if (uiscale == 0)
+		{
+			// Default should try to scale to 640x400
+			int vscale = Screen.GetHeight() / 400;
+			int hscale = Screen.GetWidth() / 640;
+			scaleval = clamp(vscale, 1, hscale);
+		}
+		else scaleval = uiscale;
+
+		// block scales that result in something larger than the current screen.
+		int vmax = Screen.GetHeight() / 200;
+		int hmax = Screen.GetWidth() / 320;
+		int smax = max(vmax, hmax);
+		return max(1, min(scaleval, smax));
+	}
+
+	//===========================================================================
+	//
+	//
+	//
+	//===========================================================================
+
+	void DrawFishBowl(void)
+	{
+		// draw left fishbowl glass gfx
+		let leftTex = TexMan.CheckForTexture("BOWLSCRL");
+		if (leftTex.IsValid())
+		{
+			Screen.DrawTexture(leftTex, false, 0, 0, DTA_CleanNoMove, true);
+		}
+
+		// draw right fishbowl glass gfx
+		let rightTex = TexMan.CheckForTexture("BOWLSCRR");
+		if (rightTex.IsValid())
+		{
+			Vector2 rightTexSize = TexMan.GetScaledSize(rightTex);
+			Screen.DrawTexture(rightTex, false, (Screen.GetWidth() - (rightTexSize.X * CleanXFac)), (Screen.GetHeight() - (rightTexSize.Y * CleanYFac)), DTA_CleanNoMove, true);
+		}
+	}
+
+	//===========================================================================
+	//
+	//
+	//
+	//===========================================================================
+
+	void DrawHealthBar(int state)
+	{
+		if (!CPlayer || !CPlayer.mo)
+			return;
+
+		if (!CVar.GetCVar("sevhud_hpbar", CPlayer).GetBool())
+			return;
+
+		if (automapactive)
+			return;
+
+		let tracer = SevHUDHealthTracer(CPlayer.mo.FindInventory("SevHUDHealthTracer"));
+		if (!tracer)
+			return;
+
+		if (tracer.currentAimTarget && CPlayer.playerstate == PST_LIVE)
+		{
+			prevAimTarget = tracer.currentAimTarget;
+			healthBarAlpha = 1.0;
+		}
+		else
+		{
+			healthBarAlpha *= 0.926;
+		}
+
+		if (prevAimTarget)
+		{
+			// get fonts
+			Font fnt = mHUDSmallFont.mFont;
+
+			// fonts are invalid, cancel drawing
+			if (!fnt)
+				return;
+
+			// retrieve target health
+			int health = prevAimTarget.Health;
+			int maxHealth = prevAimTarget.GetMaxHealth(true);
+
+			// no need to draw 0 or negative health
+			if (health <= 0)
+				return;
+
+			// base Y position of the entire HP bar interface
+			let scale = GetUIScale(con_scaletext);
+			double baseYPos = (fnt.GetHeight() * scale) * con_notifylines;
+			baseYPos /= CleanYFac;
+			baseYPos += fnt.GetHeight();
+
+			// draw HP bar background
+			let bgTex = TexMan.CheckForTexture("graphics/SevHUD/HPBarShade.png");
+			if (bgTex.IsValid())
+			{
+				Vector2 bgTexSize = TexMan.GetScaledSize(bgTex);
+				Screen.DrawTexture(bgTex, false,
+					(Screen.GetWidth() / 2) - ((bgTexSize.X / 2) * CleanXFac),
+					(baseYPos * CleanYFac),
+					DTA_CleanNoMove, true,
+					DTA_KeepRatio, true,
+					DTA_Alpha, 0.66 * healthBarAlpha);
+			}
+
+			String txt;
+
+			// draw health bar
+			let barTex = TexMan.CheckForTexture("graphics/SevHUD/HPBarHealth.png");
+			if (barTex.IsValid())
+			{
+				Vector2 barTexSize = TexMan.GetScaledSize(barTex);
+
+				// get the starting X pos to clip to
+				int clipX = (Screen.GetWidth() / 2) - ((int(barTexSize.X) / 2) * CleanXFac);
+
+				// get the full X size of the texture
+				int fullClip = (int(barTexSize.X) * CleanXFac);
+
+				// get health percentage
+				int healthPercent = 100 * health / maxHealth;
+				int maxClip = fullClip * healthPercent / 100;
+
+				// set the clipping
+				clipX += maxClip;
+
+				Screen.DrawTexture(barTex, false,
+					(Screen.GetWidth() / 2) - ((barTexSize.X / 2) * CleanXFac),
+					(baseYPos * CleanYFac),
+					DTA_ClipRight, int(clipX),
+					DTA_CleanNoMove, true,
+					DTA_KeepRatio, true,
+					DTA_Alpha, healthBarAlpha);
+			}
+
+			// get font colours
+			int normalTxtColor = Font.CR_RED;
+			int nameTxtColor = Font.CR_WHITE;
+
+			// draw target name
+			String targName = prevAimTarget.GetCharacterName();
+			if (prevAimTarget is "PlayerPawn" && prevAimTarget.player && playeringame[prevAimTarget.PlayerNumber()])
+				targName = prevAimTarget.player.GetUserName();
+			txt = String.Format("%s", targName);
+			Screen.DrawText(fnt, nameTxtColor,
+				(Screen.GetWidth() / 2) - ((fnt.StringWidth(txt) / 2) * CleanXFac),
+				(baseYPos * CleanYFac) - (fnt.GetHeight() * CleanYFac),
+				txt,
+				DTA_CleanNoMove, true,
+				DTA_KeepRatio, true,
+				DTA_Alpha, healthBarAlpha);
+
+			// draw target health in numbers
+			txt = String.Format("%d/%d", health, maxHealth);
+			Screen.DrawText(fnt, normalTxtColor,
+				(Screen.GetWidth() / 2) - ((fnt.StringWidth(txt) / 2) * CleanXFac),
+				(baseYPos * CleanYFac) + (fnt.GetHeight() * CleanYFac) - (fnt.GetHeight() * CleanYFac) + (3 * CleanYFac),
+				txt,
+				DTA_CleanNoMove, true,
+				DTA_KeepRatio, true,
+				DTA_Alpha, healthBarAlpha);
+		}
+	}
+
+	//===========================================================================
+	//
+	//
+	//
+	//===========================================================================
+
+	void DrawSevHUDAmmo(HUDFont fnt)
+	{
+		int amt1, maxamt;
+		[amt1, maxamt] = GetAmount("PaintAmmo");
+		DrawString(fnt, FormatNumber(amt1, 3), (262, 169), DI_TEXT_ALIGN_RIGHT);
+		DrawBar("graphics/SevHUD/square/AMMHBAR1.lmp", "AMMHBARE", amt1, maxamt, (265, 170), 0, SHADER_HORZ, DI_ITEM_OFFSETS, 1.0);
+
+		[amt1, maxamt] = GetAmount("OoziAmmo");
+		DrawString(fnt, FormatNumber(amt1, 3), (262, 175), DI_TEXT_ALIGN_RIGHT);
+		DrawBar("graphics/SevHUD/square/AMMHBAR2.lmp", "AMMHBARE", amt1, maxamt, (265, 176), 0, SHADER_HORZ, DI_ITEM_OFFSETS, 1.0);
+
+		[amt1, maxamt] = GetAmount("ShotboltAmmo");
+		DrawString(fnt, FormatNumber(amt1, 3), (262, 181), DI_TEXT_ALIGN_RIGHT);
+		DrawBar("graphics/SevHUD/square/AMMHBAR3.lmp", "AMMHBARE", amt1, maxamt, (265, 182), 0, SHADER_HORZ, DI_ITEM_OFFSETS, 1.0);
+
+		[amt1, maxamt] = GetAmount("HellShellAmmo");
+		DrawString(fnt, FormatNumber(amt1, 3), (262, 187), DI_TEXT_ALIGN_RIGHT);
+		DrawBar("graphics/SevHUD/square/AMMHBAR4.lmp", "AMMHBARE", amt1, maxamt, (265, 188), 0, SHADER_HORZ, DI_ITEM_OFFSETS, 1.0);
+
+		[amt1, maxamt] = GetAmount("MarbleAmmo");
+		DrawString(fnt, FormatNumber(amt1, 3), (262, 193), DI_TEXT_ALIGN_RIGHT);
+		DrawBar("graphics/SevHUD/square/AMMHBAR5.lmp", "AMMHBARE", amt1, maxamt, (265, 194), 0, SHADER_HORZ, DI_ITEM_OFFSETS, 1.0);
+	}
+
+	//===========================================================================
+	//
+	//
+	//
+	//===========================================================================
+
+	void DrawSquareKeys(void)
+	{
+		bool locks[17];
+		for(int i = 0; i < 17; i++) locks[i] = CPlayer.mo.CheckKeys(i + 1, false, true);
+
+		// Same order as base game
+		if (locks[1])
+			DrawImage("STKEYS0", (230, 171), DI_ITEM_OFFSETS);
+
+		if (locks[2])
+			DrawImage("STKEYS1", (230, 181), DI_ITEM_OFFSETS);
+
+		if (locks[0])
+			DrawImage("STKEYS2", (230, 191), DI_ITEM_OFFSETS);
+
+		if (locks[4])
+			DrawImage("STKEYS3", (230, 171), DI_ITEM_OFFSETS);
+
+		if (locks[5])
+			DrawImage("STKEYS4", (230, 181), DI_ITEM_OFFSETS);
+
+		if (locks[3])
+			DrawImage("STKEYS5", (230, 191), DI_ITEM_OFFSETS);
+
+		if (locks[7])
+			DrawImage("STKEYSF1", (230, 171), DI_ITEM_OFFSETS);
+
+		if (locks[8])
+			DrawImage("STKEYSF2", (230, 181), DI_ITEM_OFFSETS);
+
+		if (locks[9])
+			DrawImage("STKEYSF3", (230, 191), DI_ITEM_OFFSETS);
+
+		if (locks[10])
+			DrawImage("STKEYSS", (230, 171), DI_ITEM_OFFSETS);
+
+		if (locks[11])
+			DrawImage("STKEYSC", (230, 181), DI_ITEM_OFFSETS);
+
+		if (locks[12])
+			DrawImage("STKEYSD", (230, 191), DI_ITEM_OFFSETS);
+
+		if (locks[13])
+			DrawImage("STKEYSCD", (230, 171), DI_ITEM_OFFSETS);
+
+		if (locks[15])
+			DrawImage("STKEYS6", (230, 171), DI_ITEM_OFFSETS);
+
+		if (locks[16])
+			DrawImage("STKEYSO", (230, 171), DI_ITEM_OFFSETS);
+
+		if (locks[6])
+			DrawImage("STKEYS7", (230, 181), DI_ITEM_OFFSETS);
+
+		if (locks[14])
+			DrawImage("STKEYS8", (230, 191), DI_ITEM_OFFSETS);
+	}
+
+	//===========================================================================
+	//
+	//
+	//
+	//===========================================================================
+
+	void SevHUDSetupAnnoyer(void)
+	{
+		// get fonts
+		Font fnt = mHUDSmallFont.mFont;
+
+		// fonts are invalid, cancel drawing
+		if (!fnt)
+			return;
+
+		int annoyTxtColor = Font.CR_WHITE;
+
+		String txt = "$SEVHUD_SETUP_ANNOY";
+
+		// annoy
+		Screen.DrawText(fnt, annoyTxtColor,
+		(Screen.GetWidth() / 2) - ((fnt.StringWidth(txt) / 2) * CleanXFac),
+		(Screen.GetHeight() / 2),
+		txt,
+		DTA_CleanNoMove, true,
+		DTA_KeepRatio, true);
+	}
+
+	//===========================================================================
+	//
+	//
+	//
+	//===========================================================================
+
+	void DrawSevHUD(int state)
+	{
+		string filepath = "graphics/SevHUD/square/";
+		HUDFont fnt = mDefaultIndexFont;
+
+		// If you have default screenblocks, you probably need to do setup
+		CVar s = CVar.GetCVar("screenblocks", CPlayer);
+		if (s != null)
+		{
+			int blocks = s.GetInt();
+			if (blocks <= 10)
+				SevHUDSetupAnnoyer();
+		}
+
+		// Draw the rest of the HUD over the bowl gfx
+		let nodrown = Powerup(CPlayer.mo.FindInventory("PowerNoDrown"));
+		if (nodrown)
+		{
+			DrawFishBowl();
+		}
+
+		if (CVar.GetCVar("sevhud_extra", CPlayer).GetBool())
+		{
+			DrawImage(filepath.."st_extra.png", (-53, 168), DI_ITEM_OFFSETS);
+			DrawImage(filepath.."st_stats.png", (320, 168), DI_ITEM_OFFSETS);
+			DrawStatusBarStats(state, filepath, fnt);
+			DrawStatusBarPowerups();
+		}
+		else
+		{
+			DrawSquarePowerups(fnt);
+		}
+	
+		// DrawMainBar
+
+		DrawImage(filepath.."SQSTBAR.lmp", (0, 168), DI_ITEM_OFFSETS|DI_TRANSLATABLE);
+
+		Inventory a1 = GetCurrentAmmo();
+		if (a1 != null) DrawString(mHUDFont, FormatNumber(a1.Amount, 3), (49, 170), DI_TEXT_ALIGN_RIGHT|DI_NOSHADOW, Font.CR_RED);
+		DrawString(mHUDFont, FormatNumber(CPlayer.health, 3), (102, 170), DI_TEXT_ALIGN_RIGHT|DI_NOSHADOW, Font.CR_RED);
+		DrawString(mHUDFont, FormatNumber(GetArmorAmount(), 3), (224, 170), DI_TEXT_ALIGN_RIGHT|DI_NOSHADOW, Font.CR_RED);
+
+		DrawSquareKeys();
+
+		DrawSevHUDAmmo(fnt);
+
+		if (CPlayer.mo.InvSel != null && !Level.NoInventoryBar)
+		{
+			DrawInventoryIcon(CPlayer.mo.InvSel, (160, 198), DI_DIMDEPLETED);
+			if (CPlayer.mo.InvSel.Amount > 1)
+			{
+				DrawString(mAmountFont, FormatNumber(CPlayer.mo.InvSel.Amount), (175, 198-mIndexFont.mFont.GetHeight()), DI_TEXT_ALIGN_RIGHT, Font.CR_GOLD);
+			}
+		}
+		else
+		{
+			DrawTexture(GetMugShot(5), (143, 168), DI_ITEM_OFFSETS);
+		}
+		if (isInventoryBarVisible())
+		{
+			DrawInventoryBar(diparms, (48, 169), 7, DI_ITEM_LEFT_TOP);
+		}
+
+		if (deathmatch || teamplay)
+		{
+			// Draw "FRAGS" text
+			DrawImage(filepath.."st_frag.lmp", (109, 191), DI_ITEM_OFFSETS);
+
+			// Draw amount of frags
+			DrawString(mHUDFont, FormatNumber(CPlayer.FragCount, 3), (139, 170), DI_TEXT_ALIGN_RIGHT, Font.CR_RED);
+		}
+		else
+		{
+			// Draw "ARMS" text
+			DrawImage(filepath.."SQSTARMS.lmp", (105, 168), DI_ITEM_OFFSETS);
+
+			// Draw weapons numbers
+			DrawImage(CPlayer.HasWeaponsInSlot(2)? "STYNUM2" : "STNNUM2", (111, 172), DI_ITEM_OFFSETS);
+			DrawImage(CPlayer.HasWeaponsInSlot(3)? "STYNUM3" : "STNNUM3", (122, 172), DI_ITEM_OFFSETS);
+			DrawImage(CPlayer.HasWeaponsInSlot(4)? "STYNUM4" : "STNNUM4", (133, 172), DI_ITEM_OFFSETS);
+			DrawImage(CPlayer.HasWeaponsInSlot(5)? "STYNUM5" : "STNNUM5", (111, 182), DI_ITEM_OFFSETS);
+			DrawImage(CPlayer.HasWeaponsInSlot(6)? "STYNUM6" : "STNNUM6", (122, 182), DI_ITEM_OFFSETS);
+			DrawImage(CPlayer.HasWeaponsInSlot(7)? "STYNUM7" : "STNNUM7", (133, 182), DI_ITEM_OFFSETS);
+		}
+
+		// Square-specific stuff
+		DrawPowerupCostumes();
+		DrawGoonadeThrowMeter();
+	}
+}

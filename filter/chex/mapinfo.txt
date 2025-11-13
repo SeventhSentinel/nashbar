@@ -1,0 +1,6 @@
+GameInfo
+{
+	StatusBarClass = "SevHUD_Chex"
+	AddEventHandlers = "SevHUDHandler"
+	borderflat = "SEV_BLNK"
+}

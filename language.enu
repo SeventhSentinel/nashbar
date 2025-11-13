@@ -1,6 +1,11 @@
 [enu default]
 
-OPTMNU_NASHBAR = "NashBar Options";
-OPTMNU_NASHBAR_HP_BAR = "Target Health Display";
-OPTMNU_NASHBAR_TRANSPARENT = "Fullscreen HUD";
-OPTVAL_TRANSSTATBAR = "Transparent status bar";
+OPTMNU_SEVHUD = "SevHUD Options";
+OPTMNU_SEVHUD_HP_BAR = "Target Health Display";
+OPTMNU_SEVHUD_STYLE = "SevHUD Style";
+OPTMNU_SEVHUD_EXTRA = "Extended Stats";
+OPTMNU_SEVHUD_PICKER = "Style Picker...";
+OPTMNU_SEVHUD_CHEXEXTRA = "Chex Arms & Ammo";
+OPTMNU_USE_SEVHUD = "Turn this off to use SevHUD";
+SEVHUD_SETUP_ANNOY = "Please set up SevHUD!\n"
+					"Options -> SevHUD Options";
