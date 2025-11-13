@@ -18,43 +18,6 @@ OptionValue SevHUDSize
 	12.0, "Automap Only"
 }
 
-OptionValue SevHUDStyle
-{
-	0, "0: Blank"
-	1, "1: Standard"
-	2, "2: Cells = Fuel"
-	3, "3: FreeDoom"
-	4, "4: Freestyle"
-	5, "5: BTSX Episode 1"
-	6, "6: BTSX Episode 2"
-	7, "7: Plutonia 2/PCRP"
-	8, "8: Eviternity"
-	9, "9: Eviternity II"
-}
-
-OptionMenu SevHUDStylePicker
-{
-	Title "$OPTMNU_SEVHUD"
-
-	StaticText "$OPTMNU_SEVHUD_CHOOSESTYLE"
-	StaticText ""
-	StaticText "IWADs"
-	Command "Doom Standard", "sevhud_style 1"
-	Command "Cells = Fuel (Legacy of Rust)", "sevhud_style 2"
-	Command "FreeDoom", "sevhud_style 3"
-	StaticText ""
-	StaticText "PWADs"
-	Command "Back to Saturn X: Episode 1", "sevhud_style 5"
-	Command "Back to Saturn X: Episode 2", "sevhud_style 6"
-	Command "Eviternity", "sevhud_style 8"
-	Command "Eviternity II", "sevhud_style 9"
-	Command "Freestyle (Freedoom-like)", "sevhud_style 4"
-	Command "Plutonia 2/PRCP", "sevhud_style 7"
-	StaticText ""
-	StaticText "Other"
-	Command "Blank", "sevhud_style 0"
-}
-
 OptionMenu "SevHUDOptionMenu"
 {
 	Title "$OPTMNU_SEVHUD"
@@ -67,13 +30,6 @@ OptionMenu "SevHUDOptionMenu"
 	StaticText "Make sure this doesn't say 'Unknown'"
 	Option "Show SevHUD",				"screenblocks", 				"SevHUDSize"
 	StaticText ""
-	IfGame(doom)
-	{
-		StaticText "$OPTMNU_SEVHUD_CHOOSESTYLE"
-		Option "$OPTMNU_SEVHUD_STYLE",			"sevhud_style", 			"SevHUDStyle"
-		Submenu "$OPTMNU_SEVHUD_PICKER", "SevHUDStylePicker"
-		StaticText ""
-	}
 	IfGame(chex)
 	{
 		StaticText "See your arms and ammo, or stick to the vanilla style"

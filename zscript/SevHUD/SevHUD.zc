@@ -23,6 +23,14 @@ class SevHUD : DoomStatusBar
 
 	Actor prevAimTarget;
 	double healthBarAlpha;
+	
+	bool gotchecksum;
+	string checksum;
+	bool gotmapset;
+	string mapset;
+	name curmap;
+	name prevmap;
+	HUDFont littleNumbers;
 
 	//===========================================================================
 	//
@@ -55,9 +63,9 @@ class SevHUD : DoomStatusBar
 	{
 		if ((state == HUD_StatusBar)||(state == HUD_Fullscreen))
 		{
+			// draw crosshair etc
 			BaseStatusBar.Draw(state, TicFrac);
 			DrawSevHUD(state);
-			// draw crosshair etc
 			DrawHealthBar(state);
 		}
 	}
@@ -72,6 +80,125 @@ class SevHUD : DoomStatusBar
 	{
 		prevAimTarget = NULL;
 		healthBarAlpha = 0.;
+		gotchecksum = false;
+	}
+
+	//===========================================================================
+	//
+	//
+	//
+	//===========================================================================
+
+	void PrintChecksum(void)
+	{
+		checksum = Level.GetChecksum();
+		Console.Printf("Current map checksum: %s", checksum);
+		gotchecksum = true;
+	}
+
+	//===========================================================================
+	//
+	//
+	//
+	//===========================================================================
+
+	void GetMapSet(void)
+	{
+		// This feels hacky! I don't like it!
+		// I'd like it to be able to run more than once for the sake of Sentinel's Lexicon. I'll worry about that later.
+		if (!gotmapset)
+		{
+			// Set defaults
+			mapset = "standard";
+			littleNumbers = mDefaultIndexFont;
+
+			Console.Printf("Running!");
+
+			if (LevelInfo.MapExists("E1M1"))
+			{
+				// Grab the E1M1 checksum to figure out what mapset we're in
+				name checksum = LevelInfo.MapChecksum("E1M1");
+
+				switch (checksum)
+				{					
+					// Assume vanilla Doom for now
+					default:
+						mapset = "standard";
+						break;
+				}
+			}
+			
+			if (LevelInfo.MapExists("MAP01"))
+			{
+				// Grab the MAP01 checksum to figure out what mapset we're in
+				name checksum = LevelInfo.MapChecksum("MAP01");
+
+				switch (checksum)
+				{
+					// BTSX ep 1
+					case 'ff9c6545037c5e5e27ce0dacd24cdd37':
+						mapset = "btsx1";
+						littleNumbers = mBTSX1IndexFont;
+						break;
+					
+					// BTSX ep 2
+					case '067cf96073db3cc4a8d887ee240f88da':
+						mapset = "btsx2";
+						littleNumbers = mBTSX2IndexFont;
+						break;
+
+					// Eviternity
+					case '9831c412420f16fa0de000fd1dbfe901':
+						mapset = "eviternity";
+						break;
+
+					// Eviternity 2
+					case '8eb38d5289c47bb68d64f2832efa096d':
+						mapset = "eviternity2";
+						break;
+
+					// Legacy of Rust
+					case 'bf34c34c5dfc8bb47228cc304f9a6748':
+						mapset = "legacyofrust";
+						break;
+
+					// Plutonia 2
+					case '26901fc48667b76027871880e357cd0a':
+						mapset = "pl2";
+						break;
+
+					// PRCP
+					case '4803362bd33b5e11956f6682dfd48900':
+						mapset = "pl2";
+						break;
+				}
+			}
+/*				if (LevelInfo.MapExists("VR"))
+			{
+				name vrchecksum = LevelInfo.MapChecksum("VR");
+				if (vrchecksum = '47b55a4612b6c2891607c52a39ea62ef')
+				{
+					// Sentinel's Lexicon support
+//					Console.Printf("You're playing The Sentinel's Lexicon!");
+					if (curmap)
+						prevmap = curmap;
+
+					curmap = level.Mapname;
+
+					switch (curmap)
+					{
+						case 'vr':
+							mapset = "blank";
+							break;
+						
+						default:
+							mapset = "standard";
+							break;
+					}
+				}
+			}*/
+		gotmapset = true;
+		}
 	}
 
 	//===========================================================================
@@ -175,19 +302,6 @@ class SevHUD : DoomStatusBar
 		let allmap = Level.allmap;
 		if (allmap)
 			DrawImage("graphics/SevHUD/extra/st_allmap.png", (-17, 186), DI_ITEM_OFFSETS);
-	}
-
-	//===========================================================================
-	//
-	//
-	//
-	//===========================================================================
-
-	void DrawMugshot(void)
-	{
-		int flags = DI_SCREEN_LEFT_BOTTOM;
-		let mug = GetMugShot(5);
-		DrawTexture(mug, (104, -1), flags);
 	}
 
 	//===========================================================================
@@ -418,9 +532,10 @@ class SevHUD : DoomStatusBar
 
 	void DrawSevHUD(int state)
 	{
-		string basefilepath = "graphics/SevHUD/";
-		string folder = "standard";
-		HUDFont fnt = mDefaultIndexFont;
+		GetMapSet();
+
+		if ((CVar.GetCVar("sevhud_checksum", CPlayer).GetBool())&&(!gotchecksum))
+			PrintChecksum();
 
 		// If you have default screenblocks, you probably need to do setup
 		CVar s = CVar.GetCVar("screenblocks", CPlayer);
@@ -431,68 +546,9 @@ class SevHUD : DoomStatusBar
 				SevHUDSetupAnnoyer();
 		}
 
-		// Get style pref
-		CVar c = CVar.GetCVar("sevhud_style", CPlayer);
-		if (c != null)
-		{
-			int style = c.GetInt();
-
-			switch (style)
-			{
-				// Wow! It's fucking nothing
-				case 0:
-					folder = "blank";
-					break;
-
-				case 2:
-					folder = "legacyofrust";
-					break;
-
-				case 3:
-					folder = "freedoom";
-					fnt = mFreeIndexFont;
-					break;
-
-				case 4:
-					folder = "freestyle";
-					break;
-
-				case 5:
-					folder = "btsx1";
-					fnt = mBTSX1IndexFont;
-					break;
-
-				case 6:
-					folder = "btsx2";
-					fnt = mBTSX2IndexFont;
-					break;
-
-				case 7:
-					folder = "pl2";
-					break;
-
-				case 8:
-					folder = "eviternity";
-					break;
-
-				case 9:
-					folder = "eviternity2";
-					break;
-			}
-		}
+		string basefilepath = "graphics/SevHUD/";
+		string folder = mapset;
 		string filepath = basefilepath..folder.."/";
-
-
-		if (CVar.GetCVar("sevhud_extra", CPlayer).GetBool())
-		{
-			DrawImage(basefilepath.."extra/st_extra.png", (-53, 168), DI_ITEM_OFFSETS);
-			DrawImage(filepath.."st_stats.png", (320, 168), DI_ITEM_OFFSETS);
-			DrawStatusBarStats(state, filepath, fnt);
-			DrawStatusBarPowerups();
-		}
-
-		// Okay, time to draw the rest of the owl
-		// Or trace the owl from gzdoom.pk3's paper I guess
 
 		// DrawMainBar
 		if (state == HUD_StatusBar)
@@ -503,76 +559,88 @@ class SevHUD : DoomStatusBar
 		{
 			DrawImage(filepath.."st_bar.png", (0, 168), DI_ITEM_OFFSETS);
 		}
-		DrawImage("STTPRCNT", (90, 171), DI_ITEM_OFFSETS);
-		DrawImage("STTPRCNT", (221, 171), DI_ITEM_OFFSETS);
 
-		Inventory a1 = GetCurrentAmmo();
-		if (a1 != null) DrawString(mHUDFont, FormatNumber(a1.Amount, 3), (44, 171), DI_TEXT_ALIGN_RIGHT|DI_NOSHADOW);
-		DrawString(mHUDFont, FormatNumber(CPlayer.health, 3), (90, 171), DI_TEXT_ALIGN_RIGHT|DI_NOSHADOW);
-		DrawString(mHUDFont, FormatNumber(GetArmorAmount(), 3), (221, 171), DI_TEXT_ALIGN_RIGHT|DI_NOSHADOW);
-
-		DoomStatusBar.DrawBarKeys();
-
-		DrawSevHUDAmmo(fnt);
-
-		if (deathmatch || teamplay)
+		// Check for blank mapset so that we get no status bar at all in Lexicon VR
+		if (mapset != "blank")
 		{
-			DrawString(mHUDFont, FormatNumber(CPlayer.FragCount, 3), (138, 171), DI_TEXT_ALIGN_RIGHT);
-		}
-
-		if (multiplayer)
-		{
-			DrawImage("STFBANY", (143, 168), DI_ITEM_OFFSETS|DI_TRANSLATABLE);
-		}
-
-		if (CPlayer.mo.InvSel != null && !Level.NoInventoryBar)
-		{
-			DrawInventoryIcon(CPlayer.mo.InvSel, (160, 198), DI_DIMDEPLETED);
-			if (CPlayer.mo.InvSel.Amount > 1)
+			if (CVar.GetCVar("sevhud_extra", CPlayer).GetBool())
 			{
-				DrawString(mAmountFont, FormatNumber(CPlayer.mo.InvSel.Amount), (175, 198-mIndexFont.mFont.GetHeight()), DI_TEXT_ALIGN_RIGHT, Font.CR_GOLD);
+				DrawImage(basefilepath.."extra/st_extra.png", (-53, 168), DI_ITEM_OFFSETS);
+				DrawImage(filepath.."st_stats.png", (320, 168), DI_ITEM_OFFSETS);
+				DrawStatusBarStats(state, filepath, littleNumbers);
+				DrawStatusBarPowerups();
 			}
-		}
-		else
-		{
-			DrawTexture(GetMugShot(5), (143, 168), DI_ITEM_OFFSETS);
-		}
-		if (isInventoryBarVisible())
-		{
-			DrawInventoryBar(diparms, (48, 169), 7, DI_ITEM_LEFT_TOP);
-		}
+			DrawImage("STTPRCNT", (90, 171), DI_ITEM_OFFSETS);
+			DrawImage("STTPRCNT", (221, 171), DI_ITEM_OFFSETS);
 
-		if (deathmatch || teamplay)
-		{
-			// Draw "FRAGS" text
-			DrawImage(filepath.."st_frag.png", (104, 168), DI_ITEM_OFFSETS);
-			// Draw amount of frags
-			DrawString(mHUDFont, FormatNumber(CPlayer.FragCount, 3), (138, 171), DI_TEXT_ALIGN_RIGHT);
-		}
-		else
-		{
-			// Draw "ARMS" text
-			DrawImage(filepath.."st_arms.png", (104, 168), DI_ITEM_OFFSETS);
-			// Draw weapons numbers
-			if (fnt == mDefaultIndexFont)
+			Inventory a1 = GetCurrentAmmo();
+			if (a1 != null) DrawString(mHUDFont, FormatNumber(a1.Amount, 3), (44, 171), DI_TEXT_ALIGN_RIGHT|DI_NOSHADOW);
+			DrawString(mHUDFont, FormatNumber(CPlayer.health, 3), (90, 171), DI_TEXT_ALIGN_RIGHT|DI_NOSHADOW);
+			DrawString(mHUDFont, FormatNumber(GetArmorAmount(), 3), (221, 171), DI_TEXT_ALIGN_RIGHT|DI_NOSHADOW);
+
+			DoomStatusBar.DrawBarKeys();
+
+			DrawSevHUDAmmo(littleNumbers);
+
+			if (deathmatch || teamplay)
 			{
-				// If we're using the default font, then draw the standard numbers
-				// That way we don't have to copy st_gnum*.png into every directory
-				DrawImage(CPlayer.HasWeaponsInSlot(2)? "STYSNUM2" : "graphics/SevHUD/standard/st_gnum2.png", (111, 172), DI_ITEM_OFFSETS);
-				DrawImage(CPlayer.HasWeaponsInSlot(3)? "STYSNUM3" : "graphics/SevHUD/standard/st_gnum3.png", (123, 172), DI_ITEM_OFFSETS);
-				DrawImage(CPlayer.HasWeaponsInSlot(4)? "STYSNUM4" : "graphics/SevHUD/standard/st_gnum4.png", (135, 172), DI_ITEM_OFFSETS);
-				DrawImage(CPlayer.HasWeaponsInSlot(5)? "STYSNUM5" : "graphics/SevHUD/standard/st_gnum5.png", (111, 182), DI_ITEM_OFFSETS);
-				DrawImage(CPlayer.HasWeaponsInSlot(6)? "STYSNUM6" : "graphics/SevHUD/standard/st_gnum6.png", (123, 182), DI_ITEM_OFFSETS);
-				DrawImage(CPlayer.HasWeaponsInSlot(7)? "STYSNUM7" : "graphics/SevHUD/standard/st_gnum7.png", (135, 182), DI_ITEM_OFFSETS);
+				DrawString(mHUDFont, FormatNumber(CPlayer.FragCount, 3), (138, 171), DI_TEXT_ALIGN_RIGHT);
+			}
+
+			if (multiplayer)
+			{
+				DrawImage("STFBANY", (143, 168), DI_ITEM_OFFSETS|DI_TRANSLATABLE);
+			}
+
+			if (CPlayer.mo.InvSel != null && !Level.NoInventoryBar)
+			{
+				DrawInventoryIcon(CPlayer.mo.InvSel, (160, 198), DI_DIMDEPLETED);
+				if (CPlayer.mo.InvSel.Amount > 1)
+				{
+					DrawString(mAmountFont, FormatNumber(CPlayer.mo.InvSel.Amount), (175, 198-mIndexFont.mFont.GetHeight()), DI_TEXT_ALIGN_RIGHT, Font.CR_GOLD);
+				}
 			}
 			else
 			{
-				DrawImage(CPlayer.HasWeaponsInSlot(2)? filepath.."st_ynum2.png" : filepath.."st_gnum2.png", (111, 172), DI_ITEM_OFFSETS);
-				DrawImage(CPlayer.HasWeaponsInSlot(3)? filepath.."st_ynum3.png" : filepath.."st_gnum3.png", (123, 172), DI_ITEM_OFFSETS);
-				DrawImage(CPlayer.HasWeaponsInSlot(4)? filepath.."st_ynum4.png" : filepath.."st_gnum4.png", (135, 172), DI_ITEM_OFFSETS);
-				DrawImage(CPlayer.HasWeaponsInSlot(5)? filepath.."st_ynum5.png" : filepath.."st_gnum5.png", (111, 182), DI_ITEM_OFFSETS);
-				DrawImage(CPlayer.HasWeaponsInSlot(6)? filepath.."st_ynum6.png" : filepath.."st_gnum6.png", (123, 182), DI_ITEM_OFFSETS);
-				DrawImage(CPlayer.HasWeaponsInSlot(7)? filepath.."st_ynum7.png" : filepath.."st_gnum7.png", (135, 182), DI_ITEM_OFFSETS);
+				DrawTexture(GetMugShot(5), (143, 168), DI_ITEM_OFFSETS);
+			}
+			if (isInventoryBarVisible())
+			{
+				DrawInventoryBar(diparms, (48, 169), 7, DI_ITEM_LEFT_TOP);
+			}
+
+			if (deathmatch || teamplay)
+			{
+				// Draw "FRAGS" text
+				DrawImage(filepath.."st_frag.png", (104, 168), DI_ITEM_OFFSETS);
+				// Draw amount of frags
+				DrawString(mHUDFont, FormatNumber(CPlayer.FragCount, 3), (138, 171), DI_TEXT_ALIGN_RIGHT);
+			}
+			else
+			{
+				// Draw "ARMS" text
+				DrawImage(filepath.."st_arms.png", (104, 168), DI_ITEM_OFFSETS);
+				// Draw weapons numbers
+				if (littleNumbers == mDefaultIndexFont)
+				{
+					// If we're using the default font, then draw the standard numbers
+					// That way we don't have to copy st_gnum*.png into every directory
+					DrawImage(CPlayer.HasWeaponsInSlot(2)? "STYSNUM2" : "graphics/SevHUD/standard/st_gnum2.png", (111, 172), DI_ITEM_OFFSETS);
+					DrawImage(CPlayer.HasWeaponsInSlot(3)? "STYSNUM3" : "graphics/SevHUD/standard/st_gnum3.png", (123, 172), DI_ITEM_OFFSETS);
+					DrawImage(CPlayer.HasWeaponsInSlot(4)? "STYSNUM4" : "graphics/SevHUD/standard/st_gnum4.png", (135, 172), DI_ITEM_OFFSETS);
+					DrawImage(CPlayer.HasWeaponsInSlot(5)? "STYSNUM5" : "graphics/SevHUD/standard/st_gnum5.png", (111, 182), DI_ITEM_OFFSETS);
+					DrawImage(CPlayer.HasWeaponsInSlot(6)? "STYSNUM6" : "graphics/SevHUD/standard/st_gnum6.png", (123, 182), DI_ITEM_OFFSETS);
+					DrawImage(CPlayer.HasWeaponsInSlot(7)? "STYSNUM7" : "graphics/SevHUD/standard/st_gnum7.png", (135, 182), DI_ITEM_OFFSETS);
+				}
+				else
+				{
+					DrawImage(CPlayer.HasWeaponsInSlot(2)? filepath.."st_ynum2.png" : filepath.."st_gnum2.png", (111, 172), DI_ITEM_OFFSETS);
+					DrawImage(CPlayer.HasWeaponsInSlot(3)? filepath.."st_ynum3.png" : filepath.."st_gnum3.png", (123, 172), DI_ITEM_OFFSETS);
+					DrawImage(CPlayer.HasWeaponsInSlot(4)? filepath.."st_ynum4.png" : filepath.."st_gnum4.png", (135, 172), DI_ITEM_OFFSETS);
+					DrawImage(CPlayer.HasWeaponsInSlot(5)? filepath.."st_ynum5.png" : filepath.."st_gnum5.png", (111, 182), DI_ITEM_OFFSETS);
+					DrawImage(CPlayer.HasWeaponsInSlot(6)? filepath.."st_ynum6.png" : filepath.."st_gnum6.png", (123, 182), DI_ITEM_OFFSETS);
+					DrawImage(CPlayer.HasWeaponsInSlot(7)? filepath.."st_ynum7.png" : filepath.."st_gnum7.png", (135, 182), DI_ITEM_OFFSETS);
+				}
 			}
 		}
 	}
