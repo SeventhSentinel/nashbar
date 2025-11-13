@@ -120,7 +120,7 @@ class SevHUD : DoomStatusBar
 				name checksum = LevelInfo.MapChecksum("E1M1");
 
 				switch (checksum)
-				{					
+				{
 					// Assume vanilla Doom for now
 					default:
 						mapset = "standard";
@@ -158,6 +158,7 @@ class SevHUD : DoomStatusBar
 						break;
 
 					// Legacy of Rust
+					// Despite the map label saying it's E1M1, it is in fact MAP01
 					case 'bf34c34c5dfc8bb47228cc304f9a6748':
 						mapset = "legacyofrust";
 						break;
