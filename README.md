@@ -15,16 +15,15 @@ License: MIT
 
 <img width="1280" height="720" alt="Screenshot_Doom_20251112_203431" src="https://github.com/user-attachments/assets/15b76751-5df9-4e4c-a7ac-f8a76ac29c72" />
 
-### Supported Games and Mods
+### Supported Games
 - Doom, Doom II, Final Doom
 - Legacy of Rust
 - Chex Quest (includes optional extra feature)
 - FreeDoom
 - Adventures of Square
-- Back to Saturn X Episodes 1 & 2
-- Eviternity & Eviternity II
-- Plutonia 2
-- Plutonia Revisited Community Project
+
+### Supported Mapsets
+See [SUPPORT.md](https://github.com/SeventhSentinel/sevhud/blob/master/README.md).
 
 <img width="1280" height="720" alt="Screenshot_Doom_20251112_231932" src="https://github.com/user-attachments/assets/93d73012-4442-4d31-90c9-94ab777797b1" />
 

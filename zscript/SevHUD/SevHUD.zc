@@ -114,23 +114,40 @@ class SevHUD : DoomStatusBar
 
 //			Console.Printf("Running!");
 
+			// Grab a map checksum to figure out what mapset we're in
 			if (LevelInfo.MapExists("E1M1"))
 			{
-				// Grab the E1M1 checksum to figure out what mapset we're in
 				name checksum = LevelInfo.MapChecksum("E1M1");
 
 				switch (checksum)
 				{
-					// Assume vanilla Doom for now
-					default:
-						mapset = "standard";
+					// TODO: add some Doom 1 wads
+				}
+			}
+			
+			if (LevelInfo.MapExists("E2M1"))
+			{
+				name checksum = LevelInfo.MapChecksum("E2M1");
+
+				switch (checksum)
+				{
+					// Aliens TC
+					// First version
+					case '1c95f245b71e5daf4824d4c715abcf7c':
+						mapset = "alienstc";
 						break;
+
+					// Second version
+					case 'ec2fb7f588a298d232923aa3b986ffd2':
+						mapset = "alienstc";
+						break;
+
+					// Third version is a Doom 2 mod, so check MAP01 for that
 				}
 			}
 			
 			if (LevelInfo.MapExists("MAP01"))
 			{
-				// Grab the MAP01 checksum to figure out what mapset we're in
 				name checksum = LevelInfo.MapChecksum("MAP01");
 
 				switch (checksum)
@@ -171,6 +188,11 @@ class SevHUD : DoomStatusBar
 					// PRCP
 					case '4803362bd33b5e11956f6682dfd48900':
 						mapset = "pl2";
+						break;
+
+					// Aliens TC third version
+					case '6ef79e89e562aab57199af1d572033f4':
+						mapset = "alienstc";
 						break;
 				}
 			}
