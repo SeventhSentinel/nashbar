@@ -309,7 +309,7 @@ class SevHUD_Chex : DoomStatusBar
 			}
 
 			// get font colours
-			int normalTxtColor = Font.CR_RED;
+			int normalTxtColor = Font.CR_GREEN;
 			int nameTxtColor = Font.CR_WHITE;
 
 			// draw target name
