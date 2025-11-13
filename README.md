@@ -1,5 +1,3 @@
-TODO: put more images here
-
 # SevHUD
 A "vanilla plus" status bar mod for [UZDoom](https://github.com/UZDoom/UZDoom)
 
