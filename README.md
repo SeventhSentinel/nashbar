@@ -11,7 +11,7 @@ License: MIT
 
 ### Features
 - Transparent status bars faithfully adapted from supported games/mods
-- Automatically loads correct graphics based on current game/mod
+- Automatically loads correct graphics based on current mapset
 - Optional NashBar-style enemy HP, powerup, and map completion stats displays
 - Translucent automap background
 
@@ -28,11 +28,17 @@ License: MIT
 - Plutonia 2
 - Plutonia Revisited Community Project
 
-[[[IMAGE]]]
+<img width="1280" height="720" alt="Screenshot_Doom_20251112_231932" src="https://github.com/user-attachments/assets/93d73012-4442-4d31-90c9-94ab777797b1" />
 
 ### Installation
 1. [Download the latest release](https://github.com/SeventhSentinel/sevhud/releases).
 2. Load `SevHUD.pk3` after your IWAD/PWAD in UZDoom.
 3. **Important:** Complete setup in Options > SevHUD Options.
 
-[[[IMAGE]]]
+<img width="1280" height="720" alt="Screenshot_Square_20251112_223723" src="https://github.com/user-attachments/assets/e1e1a3de-bcec-4afb-a201-107696117b08" />
+
+### Compatibility
+- SevHUD is ZScript-based. I have only tested it in UZDoom.
+- Software renderer does not support translucent automap background.
+
+If you like SevHUD, feel free to contribute to it! :)
