@@ -2,7 +2,9 @@ TODO: put more images here
 
 # SevHUD
 A "vanilla plus" status bar mod for [UZDoom](https://github.com/UZDoom/UZDoom)
+
 Forked from the excellent [NashBar](https://github.com/nashmuhandes/nashbar) by Nash Muhandes
+
 License: MIT
 
 <img width="1280" height="720" alt="Screenshot_Doom_20251112_202350" src="https://github.com/user-attachments/assets/8489dc5a-fda7-4c95-8396-49dea5ee4d65" />
