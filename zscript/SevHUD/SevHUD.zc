@@ -112,7 +112,7 @@ class SevHUD : DoomStatusBar
 			mapset = "standard";
 			littleNumbers = mDefaultIndexFont;
 
-			Console.Printf("Running!");
+//			Console.Printf("Running!");
 
 			if (LevelInfo.MapExists("E1M1"))
 			{
