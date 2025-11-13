@@ -9,3 +9,5 @@ OPTMNU_SEVHUD_CHEXEXTRA = "Chex Arms & Ammo";
 OPTMNU_USE_SEVHUD = "Turn this off to use SevHUD";
 SEVHUD_SETUP_ANNOY = "Please set up SevHUD!\n"
 					"Options -> SevHUD Options";
+OPTMNU_SEVHUD_UPDATE = "Check for updates at https://github.com/SeventhSentinel/sevhud/releases";
+OPTMNU_SEVHUD_SHILL = "Check out Snap the Sentinel at https://snapgame.net!";
