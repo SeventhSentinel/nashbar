@@ -8,3 +8,4 @@
 
 ### Upcoming
 - Aliens TC
+- Army of Darkness TC
