@@ -32,14 +32,10 @@ class SevHUD : DoomStatusBar
 	string powerups;
 	string stats;
 
-	int invuloffsetx;
-	int invuloffsety;
-	int lightampoffsetx;
-	int lightampoffsety;
-	int invisoffsetx;
-	int invisoffsety;
-	int radsuitoffsetx;
-	int radsuitoffsety;
+	vector2 invuloffset;
+	vector2 lightampoffset;
+	vector2 invisoffset;
+	vector2 radsuitoffset;
 
 	// To be used for Sentinel's Lexicon support later
 	// name curmap;
@@ -128,14 +124,10 @@ class SevHUD : DoomStatusBar
 			stats = "standard";
 
 			// Graphic offsets don't work for drawing bars, so we'll add them here instead
-			invuloffsetx = 0;
-			invuloffsety = 0;
-			lightampoffsetx = 0;
-			lightampoffsety = 0;
-			invisoffsetx = 0;
-			invisoffsety = 0;
-			radsuitoffsetx = 0;
-			radsuitoffsety = 0;
+			invuloffset = (0, 0);
+			lightampoffset = (0, 0);
+			invisoffset = (0, 0);
+			radsuitoffset = (0, 0);
 
 //			Console.Printf("Running!");
 
@@ -238,8 +230,7 @@ class SevHUD : DoomStatusBar
 					case '8af76bf89a864c1e2b3b21865c277298':
 						mapset = "pd2";
 						powerups = mapset;
-						radsuitoffsetx = -15;
-						radsuitoffsety = 1;
+						radsuitoffset = (-15, 1);
 						break;
 
 					// Plutonia 2
@@ -410,19 +401,19 @@ class SevHUD : DoomStatusBar
 			DrawImage(basefilepath..powerups.."/st_extra.png", (-53, 168), DI_ITEM_OFFSETS);
 
 			if (invul)
-				DrawBar(basefilepath..powerups.."/st_invul.png", basefilepath..powerups.."/st_invulback.png", int(Ceil(double(invul.EffectTics))), int(Ceil(double(invul.MaxEffectTics))), (invuloffsetx-48, 172+invuloffsety), 0, SHADER_VERT|SHADER_REVERSE, DI_ITEM_OFFSETS, 1.0);
+				DrawBar(basefilepath..powerups.."/st_invul.png", basefilepath..powerups.."/st_invulback.png", int(Ceil(double(invul.EffectTics))), int(Ceil(double(invul.MaxEffectTics))), invuloffset + (-48, 172), 0, SHADER_VERT|SHADER_REVERSE, DI_ITEM_OFFSETS, 1.0);
 
 			if (lightamp)
-				DrawBar(basefilepath..powerups.."/st_lightamp.png", basefilepath..powerups.."/st_lightampback.png", int(Ceil(double(lightamp.EffectTics))), int(Ceil(double(lightamp.MaxEffectTics))), (lightampoffsetx-33, 174+lightampoffsety), 0, SHADER_VERT|SHADER_REVERSE, DI_ITEM_OFFSETS, 1.0);
+				DrawBar(basefilepath..powerups.."/st_lightamp.png", basefilepath..powerups.."/st_lightampback.png", int(Ceil(double(lightamp.EffectTics))), int(Ceil(double(lightamp.MaxEffectTics))), lightampoffset + (-33, 174), 0, SHADER_VERT|SHADER_REVERSE, DI_ITEM_OFFSETS, 1.0);
 
 			if (invis)
-				DrawBar(basefilepath..powerups.."/st_invis.png", basefilepath..powerups.."/st_invisback.png", int(Ceil(double(invis.EffectTics))), int(Ceil(double(invis.MaxEffectTics))), (invisoffsetx-17, 172+invisoffsety), 0, SHADER_VERT|SHADER_REVERSE, DI_ITEM_OFFSETS, 1.0);
+				DrawBar(basefilepath..powerups.."/st_invis.png", basefilepath..powerups.."/st_invisback.png", int(Ceil(double(invis.EffectTics))), int(Ceil(double(invis.MaxEffectTics))), invisoffset + (-17, 172), 0, SHADER_VERT|SHADER_REVERSE, DI_ITEM_OFFSETS, 1.0);
 
 			if (berserk)
 				DrawImage(basefilepath..powerups.."/st_berserk.png", (-48, 188), DI_ITEM_OFFSETS);
 
 			if (radsuit)
-				DrawBar(basefilepath..powerups.."/st_radsuit.png", basefilepath..powerups.."/st_radsuitback.png", int(Ceil(double(radSuit.EffectTics))), int(Ceil(double(radSuit.MaxEffectTics))), (radsuitoffsetx-33, 185+radsuitoffsety), 0, SHADER_VERT|SHADER_REVERSE, DI_ITEM_OFFSETS, 1.0);
+				DrawBar(basefilepath..powerups.."/st_radsuit.png", basefilepath..powerups.."/st_radsuitback.png", int(Ceil(double(radSuit.EffectTics))), int(Ceil(double(radSuit.MaxEffectTics))), radsuitoffset + (-33, 185), 0, SHADER_VERT|SHADER_REVERSE, DI_ITEM_OFFSETS, 1.0);
 
 			if (allmap)
 				DrawImage(basefilepath..powerups.."/st_allmap.png", (-17, 186), DI_ITEM_OFFSETS);
