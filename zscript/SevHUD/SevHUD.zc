@@ -138,15 +138,13 @@ class SevHUD : DoomStatusBar
 					// Aliens TC
 					// First version
 					case '1c95f245b71e5daf4824d4c715abcf7c':
-						mapset = "alienstc";
-						break;
-
 					// Second version
 					case 'ec2fb7f588a298d232923aa3b986ffd2':
+					// Some version of it I found on Reddit that claims to make it work better in GZDoom
+					// I don't think it does, but I already got the checksum, so here ya go
+					case 'f27e523702be6c2d14b2e83983af218a':
 						mapset = "alienstc";
 						break;
-
-					// Third version is a Doom 2 mod, so check MAP01 for that
 					
 					// Army of Darkness TC
 					case '3903449618f2612263f01306eeb911d6':
@@ -211,9 +209,14 @@ class SevHUD : DoomStatusBar
 						mapset = "pl2";
 						break;
 
-					// Aliens TC third version
+					// Aliens TC Doom 2 version
 					case '6ef79e89e562aab57199af1d572033f4':
 						mapset = "alienstc";
+						break;
+
+					// Alien Vendetta
+					case '5a24fc83a3f9a2d6d54af04e2e96684f':
+						mapset = "av";
 						break;
 				}
 			}
