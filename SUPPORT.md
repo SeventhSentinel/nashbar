@@ -13,3 +13,4 @@ You can try the upcoming HUDs by downloading the bleeding edge version of SevHUD
 - Aliens TC
 - Alien Vendetta
 - Army of Darkness TC
+- Pirate Doom 2
