@@ -8,4 +8,5 @@
 
 ### Upcoming
 - Aliens TC
+- Alien Vendetta
 - Army of Darkness TC
