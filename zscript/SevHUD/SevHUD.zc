@@ -29,10 +29,11 @@ class SevHUD : DoomStatusBar
 	string checksum;
 	bool gotmapset;
 	string mapset;
-	name curmap;
-	name prevmap;
+//	name curmap;
+//	name prevmap;
 	HUDFont littleNumbers;
 	string powerups;
+	string stats;
 
 	//===========================================================================
 	//
@@ -115,6 +116,7 @@ class SevHUD : DoomStatusBar
 			mapset = "standard";
 			powerups = "standard";
 			littleNumbers = mDefaultIndexFont;
+			stats = "standard";
 
 //			Console.Printf("Running!");
 
@@ -174,6 +176,7 @@ class SevHUD : DoomStatusBar
 						mapset = "btsx1";
 						powerups = "doom";
 						littleNumbers = mBTSX1IndexFont;
+						stats = mapset;
 						break;
 					
 					// BTSX ep 2
@@ -181,16 +184,19 @@ class SevHUD : DoomStatusBar
 						mapset = "btsx2";
 						powerups = "doom";
 						littleNumbers = mBTSX2IndexFont;
+						stats = mapset;
 						break;
 
 					// Eviternity
 					case '9831c412420f16fa0de000fd1dbfe901':
 						mapset = "eviternity";
+						stats = mapset;
 						break;
 
 					// Eviternity 2
 					case '8eb38d5289c47bb68d64f2832efa096d':
 						mapset = "eviternity2";
+						stats = mapset;
 						break;
 
 					// Legacy of Rust
@@ -202,11 +208,13 @@ class SevHUD : DoomStatusBar
 					// Plutonia 2
 					case '26901fc48667b76027871880e357cd0a':
 						mapset = "pl2";
+						stats = mapset;
 						break;
 
 					// PRCP
 					case '4803362bd33b5e11956f6682dfd48900':
 						mapset = "pl2";
+						stats = mapset;
 						break;
 
 					// Aliens TC Doom 2 version
@@ -252,10 +260,10 @@ class SevHUD : DoomStatusBar
 	//
 	//===========================================================================
 
-	void DrawStatusBarStats(int state, string filepath, HUDFont fnt)
+	void DrawStatusBarStats(int state, string basefilepath, HUDFont fnt)
 	{
 		// Draw the background first
-		DrawImage(filepath.."st_stats.png", (320, 168), DI_ITEM_OFFSETS);
+		DrawImage(basefilepath..stats.."/st_stats.png", (320, 168), DI_ITEM_OFFSETS);
 
 		int amt;
 		int pcnt;
@@ -298,7 +306,7 @@ class SevHUD : DoomStatusBar
 				hoursoffset = 1;
 				amt = hours;
 				DrawString(fnt, FormatNumber(amt, 1, format: 2), (274 + xoffset+2, 191), DI_TEXT_ALIGN_RIGHT);
-				DrawImage(filepath.."st_colon.png", (347, 192), DI_ITEM_OFFSETS);
+				DrawImage(basefilepath..stats.."/st_colon.png", (347, 192), DI_ITEM_OFFSETS);
 			}
 
 			// minutes
@@ -627,8 +635,7 @@ class SevHUD : DoomStatusBar
 		}
 
 		string basefilepath = "graphics/SevHUD/";
-		string folder = mapset;
-		string filepath = basefilepath..folder.."/";
+		string filepath = basefilepath..mapset.."/";
 
 		// DrawMainBar
 		if (state == HUD_StatusBar)
@@ -646,7 +653,7 @@ class SevHUD : DoomStatusBar
 
 		if (CVar.GetCVar("sevhud_extra", CPlayer).GetBool())
 		{
-			DrawStatusBarStats(state, filepath, littleNumbers);
+			DrawStatusBarStats(state, basefilepath, littleNumbers);
 			DrawStatusBarPowerups(basefilepath);
 		}
 		DrawImage("STTPRCNT", (90, 171), DI_ITEM_OFFSETS);
