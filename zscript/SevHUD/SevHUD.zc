@@ -251,6 +251,9 @@ class SevHUD : DoomStatusBar
 
 	void DrawStatusBarStats(int state, string filepath, HUDFont fnt)
 	{
+		// Draw the background first
+		DrawImage(filepath.."st_stats.png", (320, 168), DI_ITEM_OFFSETS);
+
 		int amt;
 		int pcnt;
 
@@ -318,32 +321,64 @@ class SevHUD : DoomStatusBar
 	//
 	//===========================================================================
 
-	void DrawStatusBarPowerups(void)
+	void DrawStatusBarPowerups(string basefilepath)
 	{
+	
+		// Get powerup states
 		let invul = Powerup(CPlayer.mo.FindInventory("PowerInvulnerable"));
-		if (invul)
-			DrawBar("graphics/SevHUD/extra/st_invul.png", "graphics/SevHUD/extra_back/st_orbback.png", int(Ceil(double(invul.EffectTics))), int(Ceil(double(invul.MaxEffectTics))), (-48, 172), 0, SHADER_VERT|SHADER_REVERSE, DI_ITEM_OFFSETS, 1.0);
-			// These specialized blank bar background graphics help the foreground graphic draw better. I was getting erroneous black pixels otherwise
-
 		let lightamp = Powerup(CPlayer.mo.FindInventory("PowerLightAmp"));
-		if (lightamp)
-			DrawBar("graphics/SevHUD/extra/st_lightamp.png", "graphics/SevHUD/extra_back/st_lightampback.png", int(Ceil(double(lightamp.EffectTics))), int(Ceil(double(lightamp.MaxEffectTics))), (-33, 174), 0, SHADER_VERT|SHADER_REVERSE, DI_ITEM_OFFSETS, 1.0);
-
 		let invis = Powerup(CPlayer.mo.FindInventory("PowerInvisibility"));
-		if (invis)
-			DrawBar("graphics/SevHUD/extra/st_invis.png", "graphics/SevHUD/extra_back/st_orbback.png", int(Ceil(double(invis.EffectTics))), int(Ceil(double(invis.MaxEffectTics))), (-17, 172), 0, SHADER_VERT|SHADER_REVERSE, DI_ITEM_OFFSETS, 1.0);
-
 		let berserk = CPlayer.mo.FindInventory("PowerStrength");
-		if (berserk)
-			DrawImage("graphics/SevHUD/extra/st_berserk.png", (-48, 188), DI_ITEM_OFFSETS);
-
 		let radsuit = Powerup(CPlayer.mo.FindInventory("PowerIronFeet"));
-		if (radsuit)
-			DrawBar("graphics/SevHUD/extra/st_radsuit.png", "graphics/SevHUD/extra_back/st_radsuitback.png", int(Ceil(double(radSuit.EffectTics))), int(Ceil(double(radSuit.MaxEffectTics))), (-33, 185), 0, SHADER_VERT|SHADER_REVERSE, DI_ITEM_OFFSETS, 1.0);
-
 		let allmap = Level.allmap;
-		if (allmap)
-			DrawImage("graphics/SevHUD/extra/st_allmap.png", (-17, 186), DI_ITEM_OFFSETS);
+		
+		if (powerups == "standard")
+		{
+			// Draw standard gfx
+			DrawImage(basefilepath.."extra/st_extra.png", (-53, 168), DI_ITEM_OFFSETS);
+
+			if (invul)
+				DrawBar(basefilepath.."extra/st_invul.png", basefilepath.."extra_back/st_orbback.png", int(Ceil(double(invul.EffectTics))), int(Ceil(double(invul.MaxEffectTics))), (-48, 172), 0, SHADER_VERT|SHADER_REVERSE, DI_ITEM_OFFSETS, 1.0);
+				// These specialized blank bar background graphics help the foreground graphic draw better. I was getting erroneous black pixels otherwise
+
+			if (lightamp)
+				DrawBar(basefilepath.."extra/st_lightamp.png", basefilepath.."extra_back/st_lightampback.png", int(Ceil(double(lightamp.EffectTics))), int(Ceil(double(lightamp.MaxEffectTics))), (-33, 174), 0, SHADER_VERT|SHADER_REVERSE, DI_ITEM_OFFSETS, 1.0);
+
+			if (invis)
+				DrawBar(basefilepath.."extra/st_invis.png", basefilepath.."extra_back/st_orbback.png", int(Ceil(double(invis.EffectTics))), int(Ceil(double(invis.MaxEffectTics))), (-17, 172), 0, SHADER_VERT|SHADER_REVERSE, DI_ITEM_OFFSETS, 1.0);
+
+			if (berserk)
+				DrawImage(basefilepath.."extra/st_berserk.png", (-48, 188), DI_ITEM_OFFSETS);
+
+			if (radsuit)
+				DrawBar(basefilepath.."extra/st_radsuit.png", basefilepath.."extra_back/st_radsuitback.png", int(Ceil(double(radSuit.EffectTics))), int(Ceil(double(radSuit.MaxEffectTics))), (-33, 185), 0, SHADER_VERT|SHADER_REVERSE, DI_ITEM_OFFSETS, 1.0);
+
+			if (allmap)
+				DrawImage(basefilepath.."extra/st_allmap.png", (-17, 186), DI_ITEM_OFFSETS);
+		}
+		else
+		{
+			// Draw mapset-specific gfx
+			DrawImage(basefilepath..powerups.."/st_extra.png", (-53, 168), DI_ITEM_OFFSETS);
+
+			if (invul)
+				DrawBar(basefilepath..powerups.."/st_invul.png", basefilepath..powerups.."/st_invulback.png", int(Ceil(double(invul.EffectTics))), int(Ceil(double(invul.MaxEffectTics))), (-48, 172), 0, SHADER_VERT|SHADER_REVERSE, DI_ITEM_OFFSETS, 1.0);
+
+			if (lightamp)
+				DrawBar(basefilepath..powerups.."/st_lightamp.png", basefilepath..powerups.."/st_lightampback.png", int(Ceil(double(lightamp.EffectTics))), int(Ceil(double(lightamp.MaxEffectTics))), (-33, 174), 0, SHADER_VERT|SHADER_REVERSE, DI_ITEM_OFFSETS, 1.0);
+
+			if (invis)
+				DrawBar(basefilepath..powerups.."/st_invis.png", basefilepath..powerups.."/st_invisback.png", int(Ceil(double(invis.EffectTics))), int(Ceil(double(invis.MaxEffectTics))), (-17, 172), 0, SHADER_VERT|SHADER_REVERSE, DI_ITEM_OFFSETS, 1.0);
+
+			if (berserk)
+				DrawImage(basefilepath..powerups.."/st_berserk.png", (-48, 188), DI_ITEM_OFFSETS);
+
+			if (radsuit)
+				DrawBar(basefilepath..powerups.."/st_radsuit.png", basefilepath..powerups.."/st_radsuitback.png", int(Ceil(double(radSuit.EffectTics))), int(Ceil(double(radSuit.MaxEffectTics))), (-33, 185), 0, SHADER_VERT|SHADER_REVERSE, DI_ITEM_OFFSETS, 1.0);
+
+			if (allmap)
+				DrawImage(basefilepath..powerups.."/st_allmap.png", (-17, 186), DI_ITEM_OFFSETS);
+		}
 	}
 
 	//===========================================================================
@@ -608,10 +643,8 @@ class SevHUD : DoomStatusBar
 
 		if (CVar.GetCVar("sevhud_extra", CPlayer).GetBool())
 		{
-			DrawImage(basefilepath.."extra/st_extra.png", (-53, 168), DI_ITEM_OFFSETS);
-			DrawImage(filepath.."st_stats.png", (320, 168), DI_ITEM_OFFSETS);
 			DrawStatusBarStats(state, filepath, littleNumbers);
-			DrawStatusBarPowerups();
+			DrawStatusBarPowerups(basefilepath);
 		}
 		DrawImage("STTPRCNT", (90, 171), DI_ITEM_OFFSETS);
 		DrawImage("STTPRCNT", (221, 171), DI_ITEM_OFFSETS);
