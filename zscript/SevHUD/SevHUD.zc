@@ -156,13 +156,23 @@ class SevHUD : DoomStatusBar
 						break;
 				}
 			}
-			
+
 			if (LevelInfo.MapExists("MAP01"))
 			{
 				name checksum = LevelInfo.MapChecksum("MAP01");
 
 				switch (checksum)
 				{
+					// Aliens TC Doom 2 version
+					case '6ef79e89e562aab57199af1d572033f4':
+						mapset = "alienstc";
+						break;
+
+					// Alien Vendetta
+					case '5a24fc83a3f9a2d6d54af04e2e96684f':
+						mapset = "av";
+						break;
+
 					// Ancient Aliens
 					// This one has a pretty normal status bar, but it replaces the powerup gfx
 					// So we'll make a folder just for the doom ones and set it
@@ -205,6 +215,12 @@ class SevHUD : DoomStatusBar
 						mapset = "legacyofrust";
 						break;
 
+					// Pirate Doom 2
+					case '8af76bf89a864c1e2b3b21865c277298':
+						mapset = "pd2";
+						powerups = mapset;
+						break;
+
 					// Plutonia 2
 					case '26901fc48667b76027871880e357cd0a':
 					// PRCP
@@ -212,18 +228,22 @@ class SevHUD : DoomStatusBar
 						mapset = "pl2";
 						stats = mapset;
 						break;
+				}
+			}
 
-					// Aliens TC Doom 2 version
-					case '6ef79e89e562aab57199af1d572033f4':
-						mapset = "alienstc";
-						break;
+/*			if (LevelInfo.MapExists("MAP41"))
+			{
+				name checksum = LevelInfo.MapChecksum("MAP41");
 
-					// Alien Vendetta
-					case '5a24fc83a3f9a2d6d54af04e2e96684f':
-						mapset = "av";
+				switch (checksum)
+				{
+					// Pirate Doom
+					case 'baebc37899109027a7e26f2e5390b0b1':
+						mapset = "pirates";
 						break;
 				}
 			}
+*/
 			/*
 				if (LevelInfo.MapExists("VR"))
 			{
