@@ -17,7 +17,6 @@ class SevHUD : DoomStatusBar
 	HUDFont mHUDConFont;
 
 	HUDFont mDefaultIndexFont;
-	HUDFont mFreeIndexFont;
 	HUDFont maodIndexFont;
 	HUDFont mBTSX1IndexFont;
 	HUDFont mBTSX2IndexFont;
@@ -51,7 +50,6 @@ class SevHUD : DoomStatusBar
 		mHUDConFont = HUDFont.Create(confont);
 
 		mDefaultIndexFont = HUDFont.Create("DefaultIndexFont");
-		mFreeIndexFont = HUDFont.Create("FreeIndexFont");
 		maodIndexFont = HUDFont.Create("aodIndexFont");
 		mBTSX1IndexFont = HUDFont.Create("BTSX1IndexFont");
 		mBTSX2IndexFont = HUDFont.Create("BTSX2IndexFont");

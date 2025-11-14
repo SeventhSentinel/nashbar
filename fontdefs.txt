@@ -12,20 +12,6 @@ DefaultIndexFont
    9 STYSNUM9
 }
 
-FreeIndexFont
-{
-	0 "graphics/SevHUD/freedoom/st_ynum0.png"
-	1 "graphics/SevHUD/freedoom/st_ynum1.png"
-	2 "graphics/SevHUD/freedoom/st_ynum2.png"
-	3 "graphics/SevHUD/freedoom/st_ynum3.png"
-	4 "graphics/SevHUD/freedoom/st_ynum4.png"
-	5 "graphics/SevHUD/freedoom/st_ynum5.png"
-	6 "graphics/SevHUD/freedoom/st_ynum6.png"
-	7 "graphics/SevHUD/freedoom/st_ynum7.png"
-	8 "graphics/SevHUD/freedoom/st_ynum8.png"
-	9 "graphics/SevHUD/freedoom/st_ynum9.png"
-}
-
 aodIndexFont
 {
 	0 "graphics/SevHUD/aod/st_ynum0.png"
