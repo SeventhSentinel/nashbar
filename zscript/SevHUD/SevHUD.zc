@@ -29,11 +29,13 @@ class SevHUD : DoomStatusBar
 	string checksum;
 	bool gotmapset;
 	string mapset;
-//	name curmap;
-//	name prevmap;
 	HUDFont littleNumbers;
 	string powerups;
 	string stats;
+
+	// To be used for Sentinel's Lexicon support later
+	// name curmap;
+	// name prevmap;
 
 	//===========================================================================
 	//
@@ -207,10 +209,6 @@ class SevHUD : DoomStatusBar
 
 					// Plutonia 2
 					case '26901fc48667b76027871880e357cd0a':
-						mapset = "pl2";
-						stats = mapset;
-						break;
-
 					// PRCP
 					case '4803362bd33b5e11956f6682dfd48900':
 						mapset = "pl2";
@@ -640,12 +638,10 @@ class SevHUD : DoomStatusBar
 		// DrawMainBar
 		if (state == HUD_StatusBar)
 		{
-			DrawImage(filepath.."st_auto.png", (0, 168), DI_ITEM_OFFSETS);
+			DrawImage(basefilepath.."STBACK.png", (0, 168), DI_ITEM_OFFSETS);
 		}
-		else if (state == HUD_Fullscreen)
-		{
-			DrawImage(filepath.."st_bar.png", (0, 168), DI_ITEM_OFFSETS);
-		}
+
+		DrawImage(filepath.."st_bar.png", (0, 168), DI_ITEM_OFFSETS);
 
 		// Don't draw a status bar at all in Lexicon VR
 		// if (mapset == "none")
