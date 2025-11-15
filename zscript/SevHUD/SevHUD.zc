@@ -49,6 +49,7 @@ class SevHUD : DoomStatusBar
 	override void Init(void)
 	{
 		Super.Init();
+		// SetSize(0, 320, 200);
 
 		mHUDSmallFont = HUDFont.Create(smallfont);
 		mHUDConFont = HUDFont.Create(confont);
@@ -76,6 +77,28 @@ class SevHUD : DoomStatusBar
 			DrawHealthBar(state);
 		}
 	}
+
+/*	override void DrawAutomapHUD(double ticFrac)
+	{
+		// Goal: Draw map name and label in the correct color depending on the loaded game, in the appropriate area of the screen
+		// Doing this means I can get rid of my hacky ass way of drawing transparent black on the bottom 32px of the screen
+
+		// get fonts
+		Font fnt = mHUDSmallFont.mFont;
+
+		// fonts are invalid, cancel drawing
+		if (!fnt)
+			return;
+			
+		string txt = "This is the automap text.";
+
+		Screen.DrawText(fnt, Font.CR_UNTRANSLATED,
+				(Screen.GetWidth() / 2) - ((fnt.StringWidth(txt) / 2) * CleanXFac),
+				(Screen.GetHeight() - 32) - (fnt.GetHeight() * CleanYFac),
+				txt,
+				DTA_CleanNoMove, true
+				DTA_KeepRatio, true);
+	}*/
 
 	//===========================================================================
 	//
@@ -133,7 +156,7 @@ class SevHUD : DoomStatusBar
 			// but I've left the checksums in if you'd like to make your own for private use.
 
 			// Grab a map checksum to figure out what mapset we're in
-			if (LevelInfo.MapExists("E1M1"))
+			/* if (LevelInfo.MapExists("E1M1"))
 			{
 				name checksum = LevelInfo.MapChecksum("E1M1");
 
@@ -141,7 +164,7 @@ class SevHUD : DoomStatusBar
 				{
 					// TODO: add some Doom 1 wads
 				}
-			}
+			} */
 			
 			if (LevelInfo.MapExists("E2M1"))
 			{
@@ -198,7 +221,7 @@ class SevHUD : DoomStatusBar
 						break; 
 
 					// Eviternity
-					/* case '9831c412420f16fa0de000fd1dbfe901':
+					case '9831c412420f16fa0de000fd1dbfe901':
 						mapset = "eviternity";
 						stats = mapset;
 						break;
@@ -207,7 +230,7 @@ class SevHUD : DoomStatusBar
 					case '8eb38d5289c47bb68d64f2832efa096d':
 						mapset = "eviternity2";
 						stats = mapset;
-						break; */
+						break;
 
 					// Legacy of Rust
 					// Despite the map label saying it's E1M1, it is in fact MAP01
