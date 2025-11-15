@@ -129,7 +129,10 @@ class SevHUD : DoomStatusBar
 			invisoffset = (0, 0);
 			radsuitoffset = (0, 0);
 
-//			Console.Printf("Running!");
+			// Console.Printf("Running!");
+
+			// Any mapsets commented out have license text or similar stating that reuse of their assets is not permitted,
+			// but I've left the checksums in if you'd like to make your own for private use.
 
 			// Grab a map checksum to figure out what mapset we're in
 			if (LevelInfo.MapExists("E1M1"))
@@ -158,13 +161,6 @@ class SevHUD : DoomStatusBar
 					case 'f27e523702be6c2d14b2e83983af218a':
 						mapset = "alienstc";
 						break;
-					
-					// Army of Darkness TC
-					case '3903449618f2612263f01306eeb911d6':
-						mapset = "aod";
-						powerups = "aod";
-						littleNumbers = maodIndexFont;
-						break;
 				}
 			}
 
@@ -179,12 +175,6 @@ class SevHUD : DoomStatusBar
 						mapset = "alienstc";
 						break;
 
-					// Alien Vendetta
-					// This one specifically says not to use its statbar
-					/* case '5a24fc83a3f9a2d6d54af04e2e96684f':
-						mapset = "av";
-						break; */
-
 					// Ancient Aliens
 					// This one has a pretty normal status bar, but it replaces the powerup gfx
 					// So we'll make a folder just for the doom ones and set it
@@ -194,7 +184,7 @@ class SevHUD : DoomStatusBar
 						break;
 
 					// BTSX ep 1
-					case 'ff9c6545037c5e5e27ce0dacd24cdd37':
+					/* case 'ff9c6545037c5e5e27ce0dacd24cdd37':
 						mapset = "btsx1";
 						powerups = "doom";
 						littleNumbers = mBTSX1IndexFont;
@@ -207,7 +197,7 @@ class SevHUD : DoomStatusBar
 						powerups = "doom";
 						littleNumbers = mBTSX2IndexFont;
 						stats = mapset;
-						break;
+						break; 
 
 					// Eviternity
 					case '9831c412420f16fa0de000fd1dbfe901':
@@ -219,7 +209,7 @@ class SevHUD : DoomStatusBar
 					case '8eb38d5289c47bb68d64f2832efa096d':
 						mapset = "eviternity2";
 						stats = mapset;
-						break;
+						break; */
 
 					// Legacy of Rust
 					// Despite the map label saying it's E1M1, it is in fact MAP01
@@ -228,8 +218,6 @@ class SevHUD : DoomStatusBar
 						break;
 
 					// Pirate Doom 2
-					// Modifications of this wad are not permitted, so I can't make a faithful status bar for it
-					// If you add your own, you can uncomment this case
 					/* case '8af76bf89a864c1e2b3b21865c277298':
 						mapset = "pd2";
 						powerups = mapset;
@@ -237,24 +225,12 @@ class SevHUD : DoomStatusBar
 						break; */
 
 					// Plutonia 2
-					case '26901fc48667b76027871880e357cd0a':
+					// case '26901fc48667b76027871880e357cd0a':
 					// PRCP
-					case '4803362bd33b5e11956f6682dfd48900':
+					/* case '4803362bd33b5e11956f6682dfd48900':
 						mapset = "pl2";
 						stats = mapset;
-						break;
-
-					// Simulacrum
-					case '1ce3924573b6d2cd06e4b22ec69ed69f':
-						mapset = "simulacrum";
-						stats = mapset;
-
-					// Squenched Avacausage
-					// This wad is under CC BY-NC-ND 4.0, so I can't distribute modified assets from it
-					// If you add your own, you can uncomment this case
-					/* case '46cd89c65a0d41b4e77166f8976a9898':
-						mapset = "squench-bite";
-						powerups = mapset;	*/
+						break; */
 				}
 			}
 
