@@ -22,9 +22,6 @@ License: MIT
 - FreeDoom
 - Adventures of Square
 
-### Supported Mapsets
-See [SUPPORT.md](https://github.com/SeventhSentinel/sevhud/blob/master/SUPPORT.md).
-
 <img width="1280" height="720" alt="Screenshot_Doom_20251112_231932" src="https://github.com/user-attachments/assets/93d73012-4442-4d31-90c9-94ab777797b1" />
 
 ### Installation
