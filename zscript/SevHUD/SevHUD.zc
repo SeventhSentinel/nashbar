@@ -180,9 +180,10 @@ class SevHUD : DoomStatusBar
 						break;
 
 					// Alien Vendetta
-					case '5a24fc83a3f9a2d6d54af04e2e96684f':
+					// This one specifically says not to use its statbar
+					/* case '5a24fc83a3f9a2d6d54af04e2e96684f':
 						mapset = "av";
-						break;
+						break; */
 
 					// Ancient Aliens
 					// This one has a pretty normal status bar, but it replaces the powerup gfx

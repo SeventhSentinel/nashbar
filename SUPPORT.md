@@ -11,5 +11,4 @@ You can try the upcoming HUDs by downloading the bleeding edge version of SevHUD
 
 **This version may contain bugs!** Please report any you find [here](https://github.com/SeventhSentinel/sevhud/issues).
 - Aliens TC
-- Alien Vendetta
 - Army of Darkness TC
