@@ -17,7 +17,6 @@ class SevHUD : DoomStatusBar
 	HUDFont mHUDConFont;
 
 	HUDFont mDefaultIndexFont;
-	HUDFont maodIndexFont;
 	HUDFont mBTSX1IndexFont;
 	HUDFont mBTSX2IndexFont;
 
@@ -55,7 +54,6 @@ class SevHUD : DoomStatusBar
 		mHUDConFont = HUDFont.Create(confont);
 
 		mDefaultIndexFont = HUDFont.Create("DefaultIndexFont");
-		maodIndexFont = HUDFont.Create("aodIndexFont");
 		mBTSX1IndexFont = HUDFont.Create("BTSX1IndexFont");
 		mBTSX2IndexFont = HUDFont.Create("BTSX2IndexFont");
 
@@ -184,7 +182,7 @@ class SevHUD : DoomStatusBar
 						break;
 
 					// BTSX ep 1
-					/* case 'ff9c6545037c5e5e27ce0dacd24cdd37':
+					 case 'ff9c6545037c5e5e27ce0dacd24cdd37':
 						mapset = "btsx1";
 						powerups = "doom";
 						littleNumbers = mBTSX1IndexFont;
@@ -200,7 +198,7 @@ class SevHUD : DoomStatusBar
 						break; 
 
 					// Eviternity
-					case '9831c412420f16fa0de000fd1dbfe901':
+					/* case '9831c412420f16fa0de000fd1dbfe901':
 						mapset = "eviternity";
 						stats = mapset;
 						break;
