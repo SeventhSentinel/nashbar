@@ -1,4 +1,4 @@
-## Supported Mapsets
+## Supported Maps
 
 ### Current release
 - Back to Saturn X Episodes 1 & 2
@@ -13,4 +13,3 @@ You can try the upcoming HUDs by downloading the bleeding edge version of SevHUD
 - Aliens TC
 - Alien Vendetta
 - Army of Darkness TC
-- Pirate Doom 2

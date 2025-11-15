@@ -227,11 +227,13 @@ class SevHUD : DoomStatusBar
 						break;
 
 					// Pirate Doom 2
-					case '8af76bf89a864c1e2b3b21865c277298':
+					// Modifications of this wad are not permitted, so I can't make a faithful status bar for it
+					// If you add your own, you can uncomment this case
+					/* case '8af76bf89a864c1e2b3b21865c277298':
 						mapset = "pd2";
 						powerups = mapset;
 						radsuitoffset = (-15, 1);
-						break;
+						break; */
 
 					// Plutonia 2
 					case '26901fc48667b76027871880e357cd0a':
@@ -240,6 +242,18 @@ class SevHUD : DoomStatusBar
 						mapset = "pl2";
 						stats = mapset;
 						break;
+
+					// Simulacrum
+					case '1ce3924573b6d2cd06e4b22ec69ed69f':
+						mapset = "simulacrum";
+						stats = mapset;
+
+					// Squenched Avacausage
+					// This wad is under CC BY-NC-ND 4.0, so I can't distribute modified assets from it
+					// If you add your own, you can uncomment this case
+					/* case '46cd89c65a0d41b4e77166f8976a9898':
+						mapset = "squench-bite";
+						powerups = mapset;	*/
 				}
 			}
 
