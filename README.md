@@ -13,7 +13,7 @@ License: MIT
 - Optional NashBar-style enemy HP, powerup, and map completion stats displays
 - Translucent automap background
 
-<img width="1280" height="720" alt="Screenshot_Doom_20251112_203431" src="https://github.com/user-attachments/assets/15b76751-5df9-4e4c-a7ac-f8a76ac29c72" />
+<img width="1280" height="720" alt="Screenshot_Chex_20251114_200432" src="https://github.com/user-attachments/assets/ed1091fe-1de1-40b0-949a-8d484d7925cf" />
 
 ### Supported Games
 - Doom, Doom II, Final Doom
